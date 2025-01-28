@@ -5,7 +5,7 @@ import '../res/colors.dart';
 var primaryTextStyle = const TextStyle(
   fontFamily: 'Poppins',
   color: AppColors.blackColor,
-  fontSize:  22,
+  fontSize:  27,
   fontWeight: FontWeight.w600,
   letterSpacing: 22 * 0.06,
 );
@@ -15,7 +15,8 @@ var secondaryTextStyle =  const TextStyle(
     color: AppColors.blackColor,
     fontSize:  20,
     letterSpacing: 20 * 0.06,
-    fontWeight: FontWeight.w600);
+     fontWeight: FontWeight.w600
+);
 
 
 var mediumTextStyle =   const TextStyle(

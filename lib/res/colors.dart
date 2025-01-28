@@ -9,7 +9,9 @@ class AppColors {
 
   static const blueColor = Colors.blue;
 
-  static const blackColor = Colors.black;
+  static const blackColor = Color(0XFF1E1E1E);
+
+  static const hintTextColor = Color(0xff545454);
 
   static const whiteColor = Colors.white;
 

@@ -20,13 +20,14 @@ class Utils {
     );
   }
 
-  static void flushBarErrorMessage(String message, BuildContext context){
+  static void flushBarMessage(String message, BuildContext context, bool error ){
     showFlushbar(context: context,
         flushbar: Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
          positionOffset: 20,
-          icon: const Icon(Icons.error, color: Colors.white, size: 25,),
-          backgroundColor: Colors.blue,
-          messageColor: Colors.white,
+          icon: Icon( error ? Icons.error : Icons.check_circle, color: Colors.white, size: 25,),
+          backgroundColor: AppColors.blackColor,
+          messageColor: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(10),
           forwardAnimationCurve: Curves.decelerate,
           reverseAnimationCurve: Curves.easeInOut,
