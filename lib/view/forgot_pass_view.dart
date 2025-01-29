@@ -162,8 +162,7 @@ class ForgotPassView extends StatelessWidget {
                                                     letterSpacing: 0),
                                                 recognizer: TapGestureRecognizer()
                                                   ..onTap = () {
-                                                    Navigator.pushNamed(
-                                                        context, RoutesName.login);
+                                                  NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.login);
                                                   },
                                               ),
                                             ],
