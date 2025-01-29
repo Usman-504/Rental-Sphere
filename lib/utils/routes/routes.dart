@@ -4,7 +4,9 @@ import 'package:rental_sphere/view/bottom_nav_view.dart';
 import 'package:rental_sphere/view/forgot_pass_view.dart';
 import 'package:rental_sphere/view/home_view.dart';
 import 'package:rental_sphere/view/login_view.dart';
+import 'package:rental_sphere/view/services_view.dart';
 import 'package:rental_sphere/view/signup_view.dart';
+import 'package:rental_sphere/view/sub_services_view.dart';
 
 import '../../view/splash_view.dart';
 
@@ -24,6 +26,10 @@ class Routes {
         return MaterialPageRoute(builder: (_)=>const BottomNavBarView());
       case RoutesName.home:
         return MaterialPageRoute(builder: (_)=>const HomeView());
+      case RoutesName.services:
+        return MaterialPageRoute(builder: (_)=>const ServicesView());
+      case RoutesName.subServices:
+        return MaterialPageRoute(builder: (_)=>const SubServicesView());
       default:
         return MaterialPageRoute(builder: (_){
           return const  Scaffold(

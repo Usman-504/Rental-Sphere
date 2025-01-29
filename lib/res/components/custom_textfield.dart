@@ -22,12 +22,16 @@ class CustomTextField extends StatelessWidget {
   final double? right;
   final double? bottom;
   final TextStyle? hintStyle;
+  final TextStyle? textStyle;
   final Color? borderColor;
+  final Color? cursorColor;
   const CustomTextField({
     super.key,
     required this.focusNode,
     this.hintStyle,
+    this.textStyle,
     this.borderColor,
+    this.cursorColor,
     this.readOnly = false,
     required this.controller,
     required this.keyboardType,
@@ -56,7 +60,10 @@ class CustomTextField extends StatelessWidget {
         keyboardType: keyboardType,
         obscureText: isPassword ? obscurePassword!.value : false,
         obscuringCharacter: '*',
-        cursorColor: AppColors.blackColor,
+        cursorColor: cursorColor ?? AppColors.blackColor,
+        style: textStyle ?? mediumTextStyle.copyWith(
+            fontSize: 16,
+            color: AppColors.blackColor),
         decoration: InputDecoration(
           focusColor: AppColors.blackColor,
           labelText:  labelText,

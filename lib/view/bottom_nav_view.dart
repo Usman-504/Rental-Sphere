@@ -18,52 +18,75 @@ class BottomNavBarView extends StatefulWidget {
 }
 
 class _BottomNavBarViewState extends State<BottomNavBarView> {
-
-
   List<Widget> widgetList = const [
-     HomeView(),
-     ServicesView(),
+    HomeView(),
+    ServicesView(),
     BookingView(),
     ChatView(),
-     ProfileView(),
+    ProfileView(),
   ];
-
 
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return ChangeNotifierProvider(
-      create: (_)=>BottomNavViewModel(),
+      create: (_) => BottomNavViewModel(),
       child: Consumer<BottomNavViewModel>(
         builder: (context, vm, child) {
           return Scaffold(
-            body:
-            IndexedStack(
+            body: IndexedStack(
               index: vm.myIndex,
               children: widgetList,
             ),
             bottomNavigationBar: BottomNavigationBar(
-
-                backgroundColor: AppColors.scaffoldColor,
-                onTap: vm.changeIndex,
-                currentIndex: vm.myIndex,
-                unselectedItemColor: AppColors.blackColor,
-                selectedItemColor: AppColors.secondaryColor,
-                type: BottomNavigationBarType.fixed,
-                selectedLabelStyle: mediumTextStyle.copyWith(fontSize: 8.5,),
-                unselectedLabelStyle: mediumTextStyle.copyWith(fontSize: 8.5,),
-                items: const[
-                   BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home', ),
-                   BottomNavigationBarItem(icon: Icon(Icons.filter_vintage_outlined), label: 'Services', ),
-                   BottomNavigationBarItem(icon: Icon(Icons.call_to_action), label: 'Bookings', ),
-                   BottomNavigationBarItem(
-                      icon: Icon(Icons.chat), label: 'Chat'),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.account_circle),
-                      label: 'Profile'),
-                ]),
+              backgroundColor: AppColors.scaffoldColor,
+              onTap: vm.changeIndex,
+              currentIndex: vm.myIndex,
+              unselectedItemColor: AppColors.blackColor,
+              selectedItemColor: AppColors.blackColor,
+              type: BottomNavigationBarType.fixed,
+              selectedLabelStyle: mediumTextStyle.copyWith(fontSize: 8.5),
+              unselectedLabelStyle: mediumTextStyle.copyWith(fontSize: 8.5),
+              items: [
+                BottomNavigationBarItem(
+                  icon: _buildNavBarIcon(Icons.home, vm.myIndex == 0),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildNavBarIcon(Icons.filter_vintage_outlined, vm.myIndex == 1),
+                  label: 'Services',
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildNavBarIcon(Icons.call_to_action, vm.myIndex == 2),
+                  label: 'Bookings',
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildNavBarIcon(Icons.chat, vm.myIndex == 3),
+                  label: 'Chat',
+                ),
+                BottomNavigationBarItem(
+                  icon: _buildNavBarIcon(Icons.account_circle, vm.myIndex == 4),
+                  label: 'Profile',
+                ),
+              ],
+            ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildNavBarIcon(IconData icon, bool isSelected) {
+    return Container(
+      padding:  EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: isSelected ? Colors.black : Colors.transparent,
+        shape: BoxShape.rectangle,
+      ),
+      child: Icon(
+        icon,
+        color: isSelected ? Colors.white : AppColors.blackColor,
       ),
     );
   }
