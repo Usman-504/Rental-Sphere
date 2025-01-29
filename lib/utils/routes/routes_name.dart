@@ -9,7 +9,7 @@ class RoutesName {
 
   static const String home = 'home_screen';
 
-  static const String weather = 'weather_screen';
+  static const String navBar = 'bottom_nav_bar_screen';
 
   static const String posts = 'posts_screen';
 }

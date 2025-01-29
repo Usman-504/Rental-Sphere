@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/components/navigation_helper.dart';
-import 'package:rental_sphere/utils/routes/routes.dart';
 import '../res/colors.dart';
 import '../res/components/custom_button.dart';
 import '../res/components/custom_textfield.dart';

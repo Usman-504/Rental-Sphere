@@ -73,7 +73,7 @@ class LoginViewModel with ChangeNotifier{
       sp.setString('profile_url', photo);
       print(sp.getString('role'));
       setLoading(false);
-      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.home, replace: true);
+      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.navBar, replace: true);
       Utils.flushBarMessage('Account Login Successfully', context, false);
       clearFields();
       notifyListeners();

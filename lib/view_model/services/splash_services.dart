@@ -19,7 +19,7 @@ class SplashServices {
     }
     else if (role != '') {
       NavigationHelper.navigateWithSlideTransition(
-          context: context, routeName: RoutesName.home, replace: true)
+          context: context, routeName: RoutesName.navBar, replace: true)
           .onError((error, stackTrace) {
         if (kDebugMode) {
           print(error.toString());

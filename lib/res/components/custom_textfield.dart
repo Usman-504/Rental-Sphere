@@ -21,9 +21,13 @@ class CustomTextField extends StatelessWidget {
   final double? left;
   final double? right;
   final double? bottom;
+  final TextStyle? hintStyle;
+  final Color? borderColor;
   const CustomTextField({
     super.key,
     required this.focusNode,
+    this.hintStyle,
+    this.borderColor,
     this.readOnly = false,
     required this.controller,
     required this.keyboardType,
@@ -73,14 +77,14 @@ class CustomTextField extends StatelessWidget {
                 color: AppColors.greyColor,
               ))
               : null),
-          hintStyle: mediumTextStyle.copyWith(fontSize: 16, color: AppColors.hintTextColor),
+          hintStyle: hintStyle ?? mediumTextStyle.copyWith(fontSize: 16, color: AppColors.hintTextColor),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide( color: AppColors.blackColor),
+            borderSide:  BorderSide( color: borderColor ?? AppColors.blackColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide( color:AppColors.blackColor),
+            borderSide: BorderSide( color:borderColor ?? AppColors.blackColor),
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
         ),

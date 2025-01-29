@@ -13,7 +13,7 @@ class HomeView extends StatelessWidget {
       child: Consumer<HomeViewModel>(
         builder: (context, vm, child) {
           return Scaffold(
-            backgroundColor: AppColors.whiteColor,
+            backgroundColor: AppColors.scaffoldColor,
             body: Center(
               child: ElevatedButton(onPressed: (){
                 vm.logout(context);
