@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
+import 'package:rental_sphere/view/forgot_pass_view.dart';
 import 'package:rental_sphere/view/home_view.dart';
 import 'package:rental_sphere/view/login_view.dart';
 import 'package:rental_sphere/view/signup_view.dart';
@@ -16,6 +17,8 @@ class Routes {
         return MaterialPageRoute(builder: (_)=>const SignUpView());
       case RoutesName.login:
         return MaterialPageRoute(builder: (_)=>const LoginView());
+      case RoutesName.forgotPass:
+        return MaterialPageRoute(builder: (_)=>const ForgotPassView());
       case RoutesName.home:
         return MaterialPageRoute(builder: (_)=>const HomeView());
       default:
