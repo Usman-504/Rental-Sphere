@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +10,9 @@ import '../colors.dart';
 import 'custom_textfield.dart';
 
 class Header extends StatelessWidget {
+  final TextEditingController controller;
   const Header({
-    super.key,
+    super.key, required this.controller,
   });
 
   @override
@@ -44,8 +46,8 @@ class Header extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      height: SizeConfig.scaleWidth(60),
-                      width: SizeConfig.scaleWidth(60),
+                      height: SizeConfig.scaleHeight(60),
+                      width: SizeConfig.scaleHeight(60),
                       decoration: BoxDecoration(
                           border: Border.all(
                               color: AppColors.whiteColor,
@@ -53,13 +55,13 @@ class Header extends StatelessWidget {
                           shape: BoxShape.circle),
                     ),
                     Positioned(
-                      top: SizeConfig.scaleWidth(5),
-                      left: SizeConfig.scaleWidth(5),
+                      top: SizeConfig.scaleHeight(5),
+                      left: SizeConfig.scaleHeight(5),
                       child: GestureDetector(
                           onTap: () {},
                           child: Container(
-                            height: SizeConfig.scaleWidth(50),
-                            width: SizeConfig.scaleWidth(50),
+                            height: SizeConfig.scaleHeight(50),
+                            width: SizeConfig.scaleHeight(50),
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
@@ -91,9 +93,9 @@ class Header extends StatelessWidget {
                         color: AppColors.whiteColor),
                     bottom: 0,
                     focusNode: vm.searchFocusNode,
-                    controller: vm.searchController,
+                    controller: controller,
                     keyboardType: TextInputType.text,
-                    hintText: 'Search listings...',
+                    hintText: 'Search & Filter listings...',
                     current: vm.searchFocusNode,
                     next: null),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/view/booking_view.dart';
+import 'package:rental_sphere/view/service_detail_view.dart';
 import 'package:rental_sphere/view/chat_view.dart';
 import 'package:rental_sphere/view/profile_view.dart';
 import 'package:rental_sphere/view/services_view.dart';
@@ -21,7 +22,7 @@ class _BottomNavBarViewState extends State<BottomNavBarView> {
   List<Widget> widgetList = const [
     HomeView(),
     ServicesView(),
-    BookingView(),
+   BookingView(),
     ChatView(),
     ProfileView(),
   ];

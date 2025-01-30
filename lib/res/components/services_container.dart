@@ -8,25 +8,36 @@ class ServiceContainer extends StatelessWidget {
   final String image;
   final String title;
   final String subTitle;
+  final bool? subService;
+  // final String? type;
+  // final String? model;
+  final String? location;
+  final String? price;
   const ServiceContainer({
     super.key,
     required this.image,
     required this.title,
     required this.subTitle,
+    this.subService,
+    // this.type,
+    // this.model,
+    this.location,
+    this.price,
   });
 
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Padding(
-      padding:  EdgeInsets.only(bottom: SizeConfig.scaleHeight(20)),
+      padding: EdgeInsets.only(bottom: SizeConfig.scaleHeight(20)),
       child: Stack(
         alignment: Alignment.center,
         children: [
           Container(
             height: SizeConfig.scaleHeight(175),
             decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+              image:
+                  DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(SizeConfig.scaleWidth(15)),
               boxShadow: normalBoxShadow,
             ),
@@ -52,8 +63,8 @@ class ServiceContainer extends StatelessWidget {
                         height: SizeConfig.scaleHeight(100),
                         width: SizeConfig.scaleHeight(100),
                         decoration: BoxDecoration(
-                            border:
-                            Border.all(color: AppColors.whiteColor, width: 3),
+                            border: Border.all(
+                                color: AppColors.whiteColor, width: 3),
                             shape: BoxShape.circle),
                       ),
                       Positioned(
@@ -80,9 +91,13 @@ class ServiceContainer extends StatelessWidget {
                           title,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
-                          style: mediumTextStyle.copyWith(
-                              color: AppColors.whiteColor,
-                              fontWeight: FontWeight.bold),
+                          style: subService == true
+                              ? smallTextStyle.copyWith(
+                                  color: AppColors.whiteColor,
+                                  fontWeight: FontWeight.w500)
+                              : mediumTextStyle.copyWith(
+                                  color: AppColors.whiteColor,
+                                  fontWeight: FontWeight.bold),
                         ),
                         Text(
                           subTitle,
@@ -90,6 +105,24 @@ class ServiceContainer extends StatelessWidget {
                               color: AppColors.whiteColor,
                               fontWeight: FontWeight.w500),
                         ),
+                        subService == true
+                            ? Text(
+                                price!,
+                                style: smallTextStyle.copyWith(
+                                    color: AppColors.whiteColor,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            : SizedBox.shrink(),
+                        subService == true
+                            ? Text(
+                                location!,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: smallTextStyle.copyWith(
+                                    color: AppColors.whiteColor,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            : SizedBox.shrink(),
                       ],
                     ),
                   ),
