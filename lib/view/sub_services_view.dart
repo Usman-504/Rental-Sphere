@@ -9,10 +9,10 @@ import 'package:rental_sphere/view_model/services_view_model.dart';
 import '../res/components/custom_header.dart';
 import '../res/components/services_container.dart';
 
-class CarServicesView extends StatelessWidget {
+class SubServicesView extends StatelessWidget {
 
   final Map args;
-  const CarServicesView({super.key,  required this.args});
+  const SubServicesView({super.key,  required this.args});
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +62,8 @@ class CarServicesView extends StatelessWidget {
                                         'location' : item['location'],
                                         'availableFrom' : item['availableFrom'],
                                         'availableTo' : item['availableTo'],
-                                        'type' : args['serviceType'] == 'Camera' ? item['brand'] : item['type'],
-                                        'model' : args['serviceType'] == 'Home' ? item['bedrooms']  : item['model'],
+                                        'type' : args['serviceType'] == 'Camera' ? item['model'] : args['serviceType'] == 'Car' ? item['type'] : item['bedrooms'],
+                                        'model' : args['serviceType'] == 'Home' ? item['type'] : args['serviceType'] == 'Camera' ? item['brand'] : item['model'],
                                         'transmission' : args['serviceType'] == 'Home' ? item['bathrooms']  : args['serviceType'] == 'Camera'? item['resolution'] : item['transmission'],
                                         'year' : args['serviceType'] == 'Home' ? item['size'] : args['serviceType'] == 'Camera'? item['sensorType'] :  item['year'],
                                         'fuelType' : args['serviceType'] == 'Home' ? item['furnished'] : args['serviceType'] == 'Camera'? item['lensType'] : item['fuelType'],

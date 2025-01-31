@@ -7,7 +7,7 @@ import 'package:rental_sphere/view/login_view.dart';
 import 'package:rental_sphere/view/service_detail_view.dart';
 import 'package:rental_sphere/view/services_view.dart';
 import 'package:rental_sphere/view/signup_view.dart';
-import 'package:rental_sphere/view/car_services_view.dart';
+import 'package:rental_sphere/view/sub_services_view.dart';
 
 import '../../view/splash_view.dart';
 
@@ -29,9 +29,9 @@ class Routes {
         return MaterialPageRoute(builder: (_)=>const HomeView());
       case RoutesName.services:
         return MaterialPageRoute(builder: (_)=>const ServicesView());
-      case RoutesName.carServices:
+      case RoutesName.subServices:
         final args = settings.arguments as Map;
-        return MaterialPageRoute(builder: (_)=> CarServicesView(args: args,));
+        return MaterialPageRoute(builder: (_)=> SubServicesView(args: args,));
       case RoutesName.detailedServices:
         final args = settings.arguments as Map;
         return MaterialPageRoute(builder: (_)=> ServiceDetailView(args: args,));

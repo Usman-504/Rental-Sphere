@@ -22,16 +22,19 @@ class ServicesViewModel with ChangeNotifier{
 
   final List<Map<String, dynamic>> allServices = [
     {
+      'serviceType': 'Car',
       'image': Assets.car,
       'title': 'Car Rentals',
       'subTitle': 'Find the perfect car for your next trip.',
     },
     {
+      'serviceType': 'Home',
       'image': Assets.home,
       'title': 'Home Rentals',
       'subTitle': 'Book cozy apartments and luxury stays.',
     },
     {
+      'serviceType': 'Camera',
       'image': Assets.camera,
       'title': 'Camera Rentals',
       'subTitle': 'Rent professional cameras for stunning shots.',
@@ -44,68 +47,6 @@ class ServicesViewModel with ChangeNotifier{
   List<Map<String, dynamic>> filteredHomeServices = [];
   List<Map<String, dynamic>> filteredCameraServices = [];
 
-  // List<Map<String, dynamic>> cars = [
-  //   {
-  //     'imageUrl': Assets.car,
-  //     'type': 'SUVG',
-  //     'make': 'Toyota',
-  //     'model': 'RAV4',
-  //     'year': '2023',
-  //     'mileage': '15,000',
-  //     'transmission': 'Automatic',
-  //     'fuelType': 'Petrol',
-  //     'pricePerHour': '1000',
-  //     'pricePerDay': '2400',
-  //     'pricePerWeek': '16800',
-  //     'location': 'Peshawar',
-  //     'availability': 'Available from Feb 1 - Feb 15',
-  //   },
-  //   {
-  //     'imageUrl': Assets.car,
-  //     'type': 'SUV',
-  //     'make': 'Toyota',
-  //     'model': 'RAV4',
-  //     'year': '2023',
-  //     'mileage': '15,000',
-  //     'transmission': 'Automatic',
-  //     'fuelType': 'Petrol',
-  //     'pricePerHour': '1000',
-  //     'pricePerDay': '2400',
-  //     'pricePerWeek': '16800',
-  //     'location': 'Peshawar',
-  //     'availability': 'Available from Feb 1 - Feb 15',
-  //   },
-  //   {
-  //     'imageUrl': Assets.car,
-  //     'type': 'SUV',
-  //     'make': 'Toyota',
-  //     'model': 'RAV4',
-  //     'year': '2023',
-  //     'mileage': '15,000',
-  //     'transmission': 'Automatic',
-  //     'fuelType': 'Petrol',
-  //     'pricePerHour': '1000',
-  //     'pricePerDay': '2400',
-  //     'pricePerWeek': '16800',
-  //     'location': 'Peshawar',
-  //     'availability': 'Available from Feb 1 - Feb 15',
-  //   },
-  //   {
-  //     'imageUrl': Assets.car,
-  //     'type': 'SUV',
-  //     'make': 'Toyota',
-  //     'model': 'RAV4',
-  //     'year': '2023',
-  //     'mileage': '15,000',
-  //     'transmission': 'Automatic',
-  //     'fuelType': 'Petrol',
-  //     'pricePerHour': '1000',
-  //     'pricePerDay': '2400',
-  //     'pricePerWeek': '16800',
-  //     'location': 'Peshawar',
-  //     'availability': 'Available from Feb 1 - Feb 15',
-  //   },
-  // ];
 
   List<Map<String, dynamic>> cars = [
     {
@@ -279,7 +220,6 @@ class ServicesViewModel with ChangeNotifier{
 
   void filterServices(String query) {
     searchQuery = query.toLowerCase();
-    print("Search Query: $searchQuery");
     if (searchQuery.isEmpty) {
       filteredServices = List.from(allServices);
     }
@@ -293,7 +233,6 @@ class ServicesViewModel with ChangeNotifier{
   void filterSubServices(String query) {
 
     searchSubQuery = query.toLowerCase();
-    print("Search Query: $searchSubQuery");
    if (searchSubQuery.isEmpty) {
      filteredCarServices = List.from(cars);
      filteredHomeServices = List.from(homes);
@@ -322,7 +261,7 @@ class ServicesViewModel with ChangeNotifier{
        return cameraType.contains(searchSubQuery) ||
            location.contains(searchSubQuery);
      }).toList();
-     print(filteredCarServices.length);
+
     }
 
     notifyListeners();

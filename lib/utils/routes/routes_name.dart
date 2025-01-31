@@ -13,9 +13,8 @@ class RoutesName {
 
   static const String services = 'services_screen';
 
-  static const String carServices = 'car_services_screen';
+  static const String subServices = 'sub_services_screen';
 
   static const String detailedServices = 'detailed_services_screen';
 
-  static const String posts = 'posts_screen';
 }

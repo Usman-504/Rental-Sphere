@@ -19,29 +19,31 @@ class ServiceDetailView extends StatelessWidget {
         title:  Text("${args['serviceType']} Rental", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
       automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding:  EdgeInsets.all(SizeConfig.scaleHeight(15)),
-        child: VehicleCard(
-          imageUrl: args['imageUrl'],
-          vehicleType: args['type'],
-          model: args['model'],
-          year: args['year'],
-          transmission: args['transmission'],
-          fuelType: args['fuelType'],
-          pricePerDay: args['price'],
-          location: args['location'],
-          availableFrom: args['availableFrom'],
-          availableTo: args['availableTo'], serviceType: args['serviceType'],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding:  EdgeInsets.all(SizeConfig.scaleHeight(15)),
+          child: ServiceDetailCard(
+            imageUrl: args['imageUrl'],
+            type: args['type'],
+            model: args['model'],
+            year: args['year'],
+            transmission: args['transmission'],
+            fuelType: args['fuelType'],
+            pricePerDay: args['price'],
+            location: args['location'],
+            availableFrom: args['availableFrom'],
+            availableTo: args['availableTo'], serviceType: args['serviceType'],
+          ),
         ),
       ),
     );
   }
 }
 
-class VehicleCard extends StatelessWidget {
+class ServiceDetailCard extends StatelessWidget {
   final String imageUrl;
   final String serviceType;
-  final String vehicleType;
+  final String type;
   final String model;
   final String year;
   final String transmission;
@@ -50,10 +52,10 @@ class VehicleCard extends StatelessWidget {
   final String location;
   final String availableFrom;
   final String availableTo;
-  const VehicleCard({
+  const ServiceDetailCard({
     super.key,
     required this.imageUrl,
-    required this.vehicleType,
+    required this.type,
     required this.model,
     required this.year,
     required this.transmission,
@@ -92,12 +94,12 @@ class VehicleCard extends StatelessWidget {
                 style:  secondaryTextStyle,
               ),
             ),
-            VehicleDetailText(label: 'Type', value: vehicleType),
-            VehicleDetailText(label: 'Fuel', value: fuelType),
-            VehicleDetailText(label: 'Model', value: year),
-            VehicleDetailText(label: 'Mode', value: transmission),
-            VehicleDetailText(label: 'Availability', value: '$availableFrom - $availableTo'),
-            VehicleDetailText(label: 'Location', value: location),
+            ServiceDetailText(label: serviceType == 'Home' ? 'Bedrooms' : serviceType == 'Camera' ? 'Model' : 'Type', value: type),
+            ServiceDetailText(label: 'Fuel', value: fuelType),
+            ServiceDetailText(label: 'Model', value: year),
+            ServiceDetailText(label: 'Mode', value: transmission),
+            ServiceDetailText(label: 'Availability', value: '$availableFrom - $availableTo'),
+            ServiceDetailText(label: 'Location', value: location),
             Row(
               children: [
                 Column(
@@ -120,11 +122,11 @@ class VehicleCard extends StatelessWidget {
   }
 }
 
-class VehicleDetailText extends StatelessWidget {
+class ServiceDetailText extends StatelessWidget {
   final String label;
   final String value;
 
-  const VehicleDetailText({
+  const ServiceDetailText({
     super.key,
     required this.label,
     required this.value,

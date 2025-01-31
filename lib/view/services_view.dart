@@ -45,21 +45,16 @@ class ServicesView extends StatelessWidget {
                               itemBuilder: (context, index) {
                               return InkWell(
                                   onTap: (){
-                                    if(index == 0){
-                                    NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.carServices, arguments: {
-                                      'serviceType' : 'Car',
-                                    });
-                                  }
-                                    if(index == 1){
-                                    NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.carServices, arguments: {
-                                      'serviceType' : 'Home',
-                                    });
-                                  }
-                                    if(index == 2){
-                                    NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.carServices, arguments: {
-                                      'serviceType' : 'Camera',
-                                    });
-                                  }
+
+                                      NavigationHelper
+                                          .navigateWithSlideTransition(
+                                          context: context,
+                                          routeName: RoutesName.subServices,
+                                          arguments: {
+                                            'serviceType': vm
+                                                .filteredServices[index]['serviceType']
+                                          });
+
 
                                     },
                                   child: ServiceContainer(image: vm.filteredServices[index]['image'], title: vm.filteredServices[index]['title'], subTitle: vm.filteredServices[index]['subTitle'],));
