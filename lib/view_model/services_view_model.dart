@@ -110,8 +110,6 @@ class ServicesViewModel with ChangeNotifier{
       'availableTo': 'Mar 10',
     },
   ];
-
-
   List<Map<String, dynamic>> homes = [
     {
       'imageUrl': Assets.home,
@@ -186,8 +184,6 @@ class ServicesViewModel with ChangeNotifier{
       'furnished': 'No',
     },
   ];
-
-
   List<Map<String, dynamic>> cameras = [
     {
       'imageUrl': Assets.camera,
@@ -243,23 +239,35 @@ class ServicesViewModel with ChangeNotifier{
      filteredCarServices = cars.where((car) {
        final carType = car['type'].toString().toLowerCase().trim();
        final model = car['model'].toString().toLowerCase().trim();
+       final price = car['pricePerDay'].toString().toLowerCase().trim();
+       final location = car['location'].toString().toLowerCase().trim();
 
        return carType.contains(searchSubQuery) ||
-           model.contains(searchSubQuery);
+           model.contains(searchSubQuery) ||
+           price.contains(searchSubQuery) ||
+           location.contains(searchSubQuery);
      }).toList();
      filteredHomeServices = homes.where((home) {
        final homeType = home['type'].toString().toLowerCase().trim();
        final location = home['location'].toString().toLowerCase().trim();
+       final bedRooms = home['bedrooms'].toString().toLowerCase().trim();
+       final price = home['pricePerDay'].toString().toLowerCase().trim();
 
        return homeType.contains(searchSubQuery) ||
-           location.contains(searchSubQuery);
+           location.contains(searchSubQuery)  ||
+           bedRooms.contains(searchSubQuery)  ||
+           price.contains(searchSubQuery);
      }).toList();
      filteredCameraServices = cameras.where((camera) {
        final cameraType = camera['brand'].toString().toLowerCase().trim();
        final location = camera['location'].toString().toLowerCase().trim();
+       final price = camera['pricePerDay'].toString().toLowerCase().trim();
+       final model = camera['model'].toString().toLowerCase().trim();
 
        return cameraType.contains(searchSubQuery) ||
-           location.contains(searchSubQuery);
+           location.contains(searchSubQuery) ||
+           price.contains(searchSubQuery) ||
+           model.contains(searchSubQuery);
      }).toList();
 
     }

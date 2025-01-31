@@ -64,9 +64,9 @@ class SubServicesView extends StatelessWidget {
                                         'availableTo' : item['availableTo'],
                                         'type' : args['serviceType'] == 'Camera' ? item['model'] : args['serviceType'] == 'Car' ? item['type'] : item['bedrooms'],
                                         'model' : args['serviceType'] == 'Home' ? item['type'] : args['serviceType'] == 'Camera' ? item['brand'] : item['model'],
-                                        'transmission' : args['serviceType'] == 'Home' ? item['bathrooms']  : args['serviceType'] == 'Camera'? item['resolution'] : item['transmission'],
+                                        'transmission' : args['serviceType'] == 'Home' ? item['furnished']  : args['serviceType'] == 'Camera'? item['resolution'] : item['transmission'],
                                         'year' : args['serviceType'] == 'Home' ? item['size'] : args['serviceType'] == 'Camera'? item['sensorType'] :  item['year'],
-                                        'fuelType' : args['serviceType'] == 'Home' ? item['furnished'] : args['serviceType'] == 'Camera'? item['lensType'] : item['fuelType'],
+                                        'fuelType' : args['serviceType'] == 'Home' ? item['bathrooms'] : args['serviceType'] == 'Camera'? item['lensType'] : item['fuelType'],
                                       });
                                     },
                                     child:

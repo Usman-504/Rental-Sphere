@@ -95,9 +95,9 @@ class ServiceDetailCard extends StatelessWidget {
               ),
             ),
             ServiceDetailText(label: serviceType == 'Home' ? 'Bedrooms' : serviceType == 'Camera' ? 'Model' : 'Type', value: type),
-            ServiceDetailText(label: 'Fuel', value: fuelType),
-            ServiceDetailText(label: 'Model', value: year),
-            ServiceDetailText(label: 'Mode', value: transmission),
+            ServiceDetailText(label: serviceType == 'Home' ? 'Bathrooms' :serviceType == 'Camera' ? 'Lens Type' : 'Fuel', value: fuelType),
+            ServiceDetailText(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Model', value: year),
+            ServiceDetailText(label: serviceType == 'Home' ? 'Furnished' :serviceType == 'Camera' ? 'Resolution' :'Transmission', value: transmission),
             ServiceDetailText(label: 'Availability', value: '$availableFrom - $availableTo'),
             ServiceDetailText(label: 'Location', value: location),
             Row(
