@@ -17,4 +17,8 @@ class RoutesName {
 
   static const String detailedServices = 'detailed_services_screen';
 
+  static const String booking = 'booking_screen';
+
+  static const String bookingDetail = 'booking_detail_screen';
+
 }

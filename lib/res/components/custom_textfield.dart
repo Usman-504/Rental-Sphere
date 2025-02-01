@@ -25,6 +25,8 @@ class CustomTextField extends StatelessWidget {
   final TextStyle? textStyle;
   final Color? borderColor;
   final Color? cursorColor;
+  final int? maxLines;
+  final VoidCallback? onPress;
   const CustomTextField({
     super.key,
     required this.focusNode,
@@ -42,7 +44,7 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     required this.current,
     required this.next,
-    this.prefixIconColor,  this.suffixWidget, this.left, this.right, this.bottom,
+    this.prefixIconColor,  this.suffixWidget, this.left, this.right, this.bottom, this.maxLines, this.onPress,
   });
   @override
   Widget build(BuildContext context) {
@@ -51,9 +53,11 @@ class CustomTextField extends StatelessWidget {
 
           bottom: bottom != null ? SizeConfig.scaleHeight(bottom!) :  SizeConfig.scaleHeight(15)),
       child: TextFormField(
+        onTap: onPress,
         onFieldSubmitted: (value) {
           Utils.fieldFocusChange(context, current, next);
         },
+        maxLines: maxLines ?? 1,
         focusNode: focusNode,
         readOnly: readOnly,
         controller: controller,

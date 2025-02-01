@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
+import 'package:rental_sphere/view/booking_details_view.dart';
+import 'package:rental_sphere/view/booking_view.dart';
 import 'package:rental_sphere/view/bottom_nav_view.dart';
 import 'package:rental_sphere/view/forgot_pass_view.dart';
 import 'package:rental_sphere/view/home_view.dart';
@@ -35,6 +37,12 @@ class Routes {
       case RoutesName.detailedServices:
         final args = settings.arguments as Map;
         return MaterialPageRoute(builder: (_)=> ServiceDetailView(args: args,));
+      case RoutesName.booking:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(builder: (_)=> BookingView(args: args,));
+      case RoutesName.bookingDetail:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(builder: (_)=> BookingDetailView(args: args,));
       default:
         return MaterialPageRoute(builder: (_){
           return const  Scaffold(

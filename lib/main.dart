@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/utils/routes/routes.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
 import 'package:rental_sphere/view_model/services_view_model.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.blackColor),
           useMaterial3: true,
         ),
         initialRoute: RoutesName.splash,

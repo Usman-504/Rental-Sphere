@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/custom_button.dart';
+import 'package:rental_sphere/res/components/custom_textfield.dart';
+import 'package:rental_sphere/res/components/navigation_helper.dart';
+import 'package:rental_sphere/utils/routes/routes_name.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/utils/styles.dart';
+import 'package:rental_sphere/view_model/service_detail_view_model.dart';
 
 
 class ServiceDetailView extends StatelessWidget {
@@ -11,30 +17,41 @@ class ServiceDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldColor,
-      appBar: AppBar(
-        backgroundColor: AppColors.blackColor,
-        centerTitle: true,
-        title:  Text("${args['serviceType']} Rental", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
-      automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding:  EdgeInsets.all(SizeConfig.scaleHeight(15)),
-          child: ServiceDetailCard(
-            imageUrl: args['imageUrl'],
-            type: args['type'],
-            model: args['model'],
-            year: args['year'],
-            transmission: args['transmission'],
-            fuelType: args['fuelType'],
-            pricePerDay: args['price'],
-            location: args['location'],
-            availableFrom: args['availableFrom'],
-            availableTo: args['availableTo'], serviceType: args['serviceType'],
-          ),
-        ),
+    return ChangeNotifierProvider(
+      create: (_)=>ServiceDetailViewModel(),
+      child: Consumer<ServiceDetailViewModel>(
+        builder: (context, vm, child) {
+          return Scaffold(
+            backgroundColor: AppColors.scaffoldColor,
+            appBar: AppBar(
+              backgroundColor: AppColors.blackColor,
+              centerTitle: true,
+              title:  Text("${args['serviceType']} Rental", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
+              automaticallyImplyLeading: false,
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding:  EdgeInsets.all(SizeConfig.scaleHeight(15)),
+                child: ServiceDetailCard(
+                  rating: vm.rating,
+                  controller: vm.reviewController,
+                  imageUrl: args['imageUrl'],
+                  type: args['type'],
+                  model: args['model'],
+                  year: args['year'],
+                  transmission: args['transmission'],
+                  fuelType: args['fuelType'],
+                  pricePerDay: args['price'],
+                  location: args['location'],
+                  availableFrom: args['availableFrom'],
+                  availableTo: args['availableTo'], serviceType: args['serviceType'], updateRatting: (rating){
+                    vm.updateRating(rating);
+                }, focusNode: vm.reviewFocusNode,
+                ),
+              ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -48,10 +65,14 @@ class ServiceDetailCard extends StatelessWidget {
   final String year;
   final String transmission;
   final String fuelType;
-  final String pricePerDay;
+  final int pricePerDay;
   final String location;
   final String availableFrom;
   final String availableTo;
+  final double rating;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final Function(double) updateRatting;
   const ServiceDetailCard({
     super.key,
     required this.imageUrl,
@@ -63,7 +84,10 @@ class ServiceDetailCard extends StatelessWidget {
     required this.pricePerDay,
     required this.location,
     required this.availableFrom,
-    required this.availableTo, required this.serviceType,
+    required this.availableTo,
+    required this.serviceType,
+    required this.rating,
+    required this.controller, required this.updateRatting, required this.focusNode,
   });
 
   @override
@@ -112,9 +136,69 @@ class ServiceDetailCard extends StatelessWidget {
                 SizedBox(
                   width: SizeConfig.scaleWidth(50),
                 ),
-                Expanded(child: CustomButton(text: 'Rent $serviceType', onPress: (){}))
+                Expanded(child: CustomButton(text: 'Rent $serviceType', onPress: (){
+                  NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.booking, arguments: {
+                    'serviceType' : serviceType,
+                    'model' : model,
+                    'type' : type,
+                    'year' : year,
+                    'transmission' : transmission,
+                    'fuelType' : fuelType,
+                    'imageUrl' : imageUrl,
+                    'location' : location,
+                    'price' : pricePerDay,
+                  });
+                }))
               ],
-            )
+            ),
+            Padding(
+              padding:  EdgeInsets.symmetric(vertical: SizeConfig.scaleHeight(10)),
+              child: Divider(
+                thickness: 1,
+                color: AppColors.blackColor,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Rate This $serviceType:", style: smallTextStyle.copyWith( fontWeight: FontWeight.bold)),
+                RatingBar.builder(
+                  initialRating: rating,
+                    minRating: 1,
+                    maxRating: 5,
+                    allowHalfRating: true,
+                    tapOnlyMode: true,
+                    itemSize: 25,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index + 1 <= rating) {
+                        return const Icon(Icons.star, color: Colors.amber); // Fully filled star
+                      } else if (index + 0.5 == rating) {
+                        return const Icon(Icons.star_half, color: Colors.amber); // Half-filled star
+                      } else {
+                        return const Icon(Icons.star_border, color: Colors.amber); // Empty star
+                      }
+                    },
+                    onRatingUpdate: updateRatting),
+              ],
+            ),
+            if(rating >0)
+              Column(
+                children: [
+                  Padding(
+                    padding:  EdgeInsets.only(top: SizeConfig.scaleHeight(10)),
+                    child: CustomTextField(
+                      maxLines: 5,
+                        focusNode: focusNode,
+                        controller: controller,
+                        keyboardType: TextInputType.text,
+                        hintText: 'Leave a Review',
+                        current: focusNode,
+                        next: null),
+                  ),
+                  CustomButton(text: 'Submit Review', onPress: (){})
+                ],
+              ),
+
           ],
         ),
       ),
