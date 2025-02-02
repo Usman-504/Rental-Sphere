@@ -6,14 +6,17 @@ import '../colors.dart';
 class DateTimeTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final TextStyle? textStyle;
+  final TextStyle? hintStyle;
   final VoidCallback onPress;
  final bool date;
+ final bool filled;
   const DateTimeTextField({
     super.key,
     required this.controller,
     required this.hintText,
     required this.onPress,
-    required this.date,
+    required this.date, this.hintStyle, this.textStyle, this.filled = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -27,13 +30,15 @@ class DateTimeTextField extends StatelessWidget {
           keyboardType:TextInputType.datetime,
           controller: controller,
           decoration: InputDecoration(
+            filled:  filled ,
+              fillColor: filled == true ? AppColors.whiteColor : Colors.transparent,
               hintText: hintText,
               suffixIcon:  InkWell(
                   onTap: onPress,
                   child:
                   Icon(date ? Icons.calendar_today_outlined : Icons.access_time_rounded, size:24, color: AppColors.blackColor,)
               ),
-              hintStyle: mediumTextStyle.copyWith(fontSize: 14, color: AppColors.hintTextColor),
+              hintStyle:  hintStyle ?? mediumTextStyle.copyWith(fontSize: 14, color: AppColors.hintTextColor),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide:  BorderSide( color: AppColors.blackColor),
@@ -45,7 +50,7 @@ class DateTimeTextField extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               isDense: true
           ),
-          style: mediumTextStyle.copyWith(
+          style: textStyle ?? mediumTextStyle.copyWith(
               fontSize: 14,
               color: AppColors.blackColor),
         ),

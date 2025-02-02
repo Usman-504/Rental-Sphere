@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/utils/routes/routes.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
+import 'package:rental_sphere/view_model/admin/add_service_view_model.dart';
 import 'package:rental_sphere/view_model/services_view_model.dart';
 
 import 'firebase_options.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create:(_)=>ServicesViewModel()),
+        ChangeNotifierProvider(create:(_)=>AddServiceViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

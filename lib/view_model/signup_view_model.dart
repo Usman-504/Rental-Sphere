@@ -1,9 +1,13 @@
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:rental_sphere/res/components/navigation_helper.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
 
+import '../utils/assets.dart';
 import '../utils/utils.dart';
 
 class SignupViewModel with ChangeNotifier{
@@ -18,6 +22,11 @@ class SignupViewModel with ChangeNotifier{
 
   final ValueNotifier<bool> obscurePassword = ValueNotifier<bool>(true);
 
+  String _imageUrl = '';
+  String get imageUrl => _imageUrl;
+
+  String _imagePath = '';
+  String get imagePath => _imagePath;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -61,24 +70,27 @@ class SignupViewModel with ChangeNotifier{
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set({
-        'name': nameController.text.trim(),
-        'email': FirebaseAuth.instance.currentUser!.email,
-        'role': 'client',
-        'user_id': FirebaseAuth.instance.currentUser!.uid,
-        'image_url' : '',
-        'image_path' : '',
-      });
-      setLoading(false);
-      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.login, replace: true);
-      Utils.flushBarMessage('Account Created Successfully', context, false);
-      clearFields();
-      notifyListeners();
-      return;
-    } on FirebaseException catch (e) {
+      await uploadAssetImage(Assets.profile);
+      if(_imageUrl.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set({
+          'name': nameController.text.trim(),
+          'email': FirebaseAuth.instance.currentUser!.email,
+          'role': 'client',
+          'user_id': FirebaseAuth.instance.currentUser!.uid,
+          'image_url': _imageUrl,
+          'image_path': _imagePath,
+        });
+        setLoading(false);
+        NavigationHelper.navigateWithSlideTransition(
+            context: context, routeName: RoutesName.login, replace: true);
+        Utils.flushBarMessage('Account Created Successfully', context, false);
+        clearFields();
+        notifyListeners();
+        return;
+      } } on FirebaseException catch (e) {
       setLoading(false);
       if (e.code == 'invalid-email') {
         Utils.flushBarMessage('The Email Format is Invalid.', context, true);
@@ -99,4 +111,33 @@ class SignupViewModel with ChangeNotifier{
       }
     }
   }
+
+
+
+  Future<void> uploadAssetImage(String assetPath) async {
+    try {
+      ByteData byteData = await rootBundle.load(assetPath);
+      Uint8List imageData = byteData.buffer.asUint8List();
+
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference referenceDirImages = referenceRoot.child('profile');
+      Reference imageToUpload = referenceDirImages.child(uniqueFileName);
+
+      setLoading(true);
+      await imageToUpload.putData(imageData);
+
+
+      _imageUrl = await imageToUpload.getDownloadURL();
+      _imagePath = imageToUpload.fullPath;
+
+      print('Image uploaded successfully, URL: $_imageUrl');
+      notifyListeners();
+    } catch (e) {
+      setLoading(false);
+      print('Failed to upload asset image: $e');
+    }
+  }
+
 }

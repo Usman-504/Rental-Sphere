@@ -11,8 +11,9 @@ import 'custom_textfield.dart';
 
 class Header extends StatelessWidget {
   final TextEditingController controller;
+  final String? hintText;
   const Header({
-    super.key, required this.controller,
+    super.key, required this.controller, this.hintText,
   });
 
   @override
@@ -90,12 +91,12 @@ class Header extends StatelessWidget {
                         color: AppColors.whiteColor),
                     hintStyle: mediumTextStyle.copyWith(
                         fontSize: 16,
-                        color: AppColors.whiteColor),
+                        color: AppColors.hintTextColor),
                     bottom: 0,
                     focusNode: vm.searchFocusNode,
                     controller: controller,
                     keyboardType: TextInputType.text,
-                    hintText: 'Search & Filter listings...',
+                    hintText: hintText ?? 'Search & Filter listings...',
                     current: vm.searchFocusNode,
                     next: null),
               ),

@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rental_sphere/view/admin/admin_home_view.dart';
 import 'package:rental_sphere/view/all_bookings_view.dart';
-import 'package:rental_sphere/view/booking_view.dart';
-import 'package:rental_sphere/view/service_detail_view.dart';
 import 'package:rental_sphere/view/chat_view.dart';
 import 'package:rental_sphere/view/profile_view.dart';
-import 'package:rental_sphere/view/services_view.dart';
-import '../res/colors.dart';
-import '../utils/size_config.dart';
-import '../utils/styles.dart';
-import '../view_model/bottom_nav_view_model.dart';
-import 'home_view.dart';
+import '../../res/colors.dart';
+import '../../utils/size_config.dart';
+import '../../utils/styles.dart';
+import '../../view_model/bottom_nav_view_model.dart';
 
-class BottomNavBarView extends StatefulWidget {
-  const BottomNavBarView({super.key});
+class NavBarView extends StatefulWidget {
+  const NavBarView({super.key});
 
   @override
-  State<BottomNavBarView> createState() => _BottomNavBarViewState();
+  State<NavBarView> createState() => _NavBarViewState();
 }
 
-class _BottomNavBarViewState extends State<BottomNavBarView> {
+class _NavBarViewState extends State<NavBarView> {
   List<Widget> widgetList = const [
-    HomeView(),
-    ServicesView(),
-   AllBookingView(),
+    AdminHomeView(),
+    AllBookingView(),
     ChatView(),
     ProfileView(),
   ];
@@ -55,12 +51,8 @@ class _BottomNavBarViewState extends State<BottomNavBarView> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: _buildNavBarIcon(Icons.filter_vintage_outlined, vm.myIndex == 1),
-                  label: 'Services',
-                ),
-                BottomNavigationBarItem(
                   icon: _buildNavBarIcon(Icons.call_to_action, vm.myIndex == 2),
-                  label: 'Bookings',
+                  label: 'Orders',
                 ),
                 BottomNavigationBarItem(
                   icon: _buildNavBarIcon(Icons.chat, vm.myIndex == 3),

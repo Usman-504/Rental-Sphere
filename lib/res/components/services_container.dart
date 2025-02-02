@@ -12,6 +12,7 @@ class ServiceContainer extends StatelessWidget {
   // final String? type;
   // final String? model;
   final String? location;
+  final double? rating;
   final String? price;
   const ServiceContainer({
     super.key,
@@ -22,7 +23,7 @@ class ServiceContainer extends StatelessWidget {
     // this.type,
     // this.model,
     this.location,
-    this.price,
+    this.price, this.rating,
   });
 
   @override
@@ -37,7 +38,7 @@ class ServiceContainer extends StatelessWidget {
             height: SizeConfig.scaleHeight(175),
             decoration: BoxDecoration(
               image:
-                  DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+                  DecorationImage(image: subService == true ? NetworkImage(image) : AssetImage(image), fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(SizeConfig.scaleWidth(15)),
               boxShadow: normalBoxShadow,
             ),
@@ -75,7 +76,7 @@ class ServiceContainer extends StatelessWidget {
                           width: SizeConfig.scaleHeight(90),
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  fit: BoxFit.cover, image: AssetImage(image)),
+                                  fit: BoxFit.cover, image: subService == true ? NetworkImage(image) : AssetImage(image)),
                               shape: BoxShape.circle),
                         ),
                       ),
@@ -122,6 +123,20 @@ class ServiceContainer extends StatelessWidget {
                                     color: AppColors.whiteColor,
                                     fontWeight: FontWeight.w500),
                               )
+                            : SizedBox.shrink(),
+                        subService == true
+                            ?  Row(
+                          children: [
+                            Text(
+                              'Ratting: ${rating!.toStringAsFixed(2)}',
+                              style: smallTextStyle.copyWith(
+                                  color: AppColors.whiteColor,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Icon(Icons.star, color: Colors.amber, size: 20,)
+                          ],
+                        )
+
                             : SizedBox.shrink(),
                       ],
                     ),

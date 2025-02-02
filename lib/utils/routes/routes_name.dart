@@ -9,9 +9,13 @@ class RoutesName {
 
   static const String navBar = 'bottom_nav_bar_screen';
 
+  static const String adminNavBar = 'admin_nav_bar_screen';
+
   static const String home = 'home_screen';
 
   static const String services = 'services_screen';
+
+  static const String addService = 'add_service_screen';
 
   static const String subServices = 'sub_services_screen';
 

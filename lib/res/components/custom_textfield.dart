@@ -18,6 +18,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixWidget;
   final Color? prefixIconColor;
   final bool readOnly;
+  final bool filled;
   final double? left;
   final double? right;
   final double? bottom;
@@ -30,6 +31,7 @@ class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
     required this.focusNode,
+    this.filled = false,
     this.hintStyle,
     this.textStyle,
     this.borderColor,
@@ -69,6 +71,8 @@ class CustomTextField extends StatelessWidget {
             fontSize: 16,
             color: AppColors.blackColor),
         decoration: InputDecoration(
+          filled: filled,
+          fillColor: filled == true ? AppColors.whiteColor : Colors.transparent,
           focusColor: AppColors.blackColor,
           labelText:  labelText,
           hintText: hintText,

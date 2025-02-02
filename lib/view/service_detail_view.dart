@@ -47,6 +47,11 @@ class ServiceDetailView extends StatelessWidget {
                   availableTo: args['availableTo'], serviceType: args['serviceType'], updateRatting: (rating){
                     vm.updateRating(rating);
                 }, focusNode: vm.reviewFocusNode,
+                  submitReview: () {
+                    vm.submitReview(args['serviceType'].toString().toLowerCase(), args['docId'], context);
+                },
+                  loading: vm.loading,
+                  reviews: args['reviews'],
                 ),
               ),
             ),
@@ -73,6 +78,9 @@ class ServiceDetailCard extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final Function(double) updateRatting;
+  final VoidCallback submitReview;
+  final bool loading;
+  final List<dynamic> reviews;
   const ServiceDetailCard({
     super.key,
     required this.imageUrl,
@@ -87,7 +95,7 @@ class ServiceDetailCard extends StatelessWidget {
     required this.availableTo,
     required this.serviceType,
     required this.rating,
-    required this.controller, required this.updateRatting, required this.focusNode,
+    required this.controller, required this.updateRatting, required this.focusNode, required this.submitReview, required this.loading, required this.reviews,
   });
 
   @override
@@ -104,7 +112,7 @@ class ServiceDetailCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 height: SizeConfig.scaleHeight(350),
                 width: double.infinity,
@@ -120,7 +128,7 @@ class ServiceDetailCard extends StatelessWidget {
             ),
             ServiceDetailText(label: serviceType == 'Home' ? 'Bedrooms' : serviceType == 'Camera' ? 'Model' : 'Type', value: type),
             ServiceDetailText(label: serviceType == 'Home' ? 'Bathrooms' :serviceType == 'Camera' ? 'Lens Type' : 'Fuel', value: fuelType),
-            ServiceDetailText(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Model', value: year),
+            ServiceDetailText(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Year', value: year),
             ServiceDetailText(label: serviceType == 'Home' ? 'Furnished' :serviceType == 'Camera' ? 'Resolution' :'Transmission', value: transmission),
             ServiceDetailText(label: 'Availability', value: '$availableFrom - $availableTo'),
             ServiceDetailText(label: 'Location', value: location),
@@ -179,6 +187,8 @@ class ServiceDetailCard extends StatelessWidget {
                       }
                     },
                     onRatingUpdate: updateRatting),
+                rating == 0 ? SizedBox.shrink() :
+                Text(rating.toString(), style: smallTextStyle,),
               ],
             ),
             if(rating >0)
@@ -195,9 +205,50 @@ class ServiceDetailCard extends StatelessWidget {
                         current: focusNode,
                         next: null),
                   ),
-                  CustomButton(text: 'Submit Review', onPress: (){})
+                  CustomButton(
+                    loading: loading,
+                      text: 'Submit Review', onPress: submitReview)
                 ],
               ),
+            Padding(
+              padding:  EdgeInsets.symmetric(vertical: SizeConfig.scaleHeight(10)),
+              child: Divider(
+                thickness: 1,
+                color: AppColors.blackColor,
+              ),
+            ),
+            if(reviews.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Reviews:', style: mediumTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: reviews.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+
+                            leading: Container(
+                              height: SizeConfig.scaleHeight(150),
+                              width: SizeConfig.scaleHeight(150),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                image: DecorationImage(image: NetworkImage(reviews[index]['image']))
+                              ),
+                            ),
+                            title: Text(reviews[index]['name']),
+                            subtitle: Text(reviews[index]['review'].toString()),
+                          ),
+                          Text(reviews[index]['review']),
+                        ],
+                      );
+                    },)
+              ],
+            ),
 
           ],
         ),

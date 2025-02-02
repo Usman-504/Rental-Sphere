@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rental_sphere/res/components/navigation_helper.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
+import 'package:rental_sphere/view_model/services/splash_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/utils.dart';
@@ -73,7 +74,8 @@ class LoginViewModel with ChangeNotifier{
       sp.setString('profile_url', photo);
       print(sp.getString('role'));
       setLoading(false);
-      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.navBar, replace: true);
+      SplashServices splashServices = SplashServices();
+      splashServices.checkUserRoleAndNavigate(context);
       Utils.flushBarMessage('Account Login Successfully', context, false);
       clearFields();
       notifyListeners();

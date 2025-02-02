@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
+import 'package:rental_sphere/view/admin/add_service_view.dart';
+import 'package:rental_sphere/view/admin/nav_bar_view.dart';
 import 'package:rental_sphere/view/booking_details_view.dart';
 import 'package:rental_sphere/view/booking_view.dart';
 import 'package:rental_sphere/view/bottom_nav_view.dart';
@@ -27,10 +29,14 @@ class Routes {
         return MaterialPageRoute(builder: (_)=>const ForgotPassView());
       case RoutesName.navBar:
         return MaterialPageRoute(builder: (_)=>const BottomNavBarView());
+      case RoutesName.adminNavBar:
+        return MaterialPageRoute(builder: (_)=>const NavBarView());
       case RoutesName.home:
         return MaterialPageRoute(builder: (_)=>const HomeView());
       case RoutesName.services:
         return MaterialPageRoute(builder: (_)=>const ServicesView());
+      case RoutesName.addService:
+        return MaterialPageRoute(builder: (_)=>const AddServiceView());
       case RoutesName.subServices:
         final args = settings.arguments as Map;
         return MaterialPageRoute(builder: (_)=> SubServicesView(args: args,));

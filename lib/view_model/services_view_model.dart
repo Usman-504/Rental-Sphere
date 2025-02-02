@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/assets.dart';
@@ -15,15 +16,15 @@ class ServicesViewModel with ChangeNotifier{
   String? _image = '';
   String? get image => _image;
 
-  void fetchUserData() async{
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    _image = sp.getString('profile_url');
-  }
+  // void fetchUserData() async{
+  //   SharedPreferences sp = await SharedPreferences.getInstance();
+  //   _image = sp.getString('profile_url');
+  // }
 
   final List<Map<String, dynamic>> allServices = [
     {
       'serviceType': 'Car',
-      'image': Assets.car,
+      'image': Assets.car1,
       'title': 'Car Rentals',
       'subTitle': 'Find the perfect car for your next trip.',
     },
@@ -50,7 +51,7 @@ class ServicesViewModel with ChangeNotifier{
 
   List<Map<String, dynamic>> cars = [
     {
-      'imageUrl': Assets.car,
+      'imageUrl': Assets.car1,
       'type': 'Sedan',
       'model': 'Civic',
       'year': '2022',
@@ -62,7 +63,7 @@ class ServicesViewModel with ChangeNotifier{
       'availableTo': 'Feb 20',
     },
     {
-      'imageUrl': Assets.car,
+      'imageUrl': Assets.car2,
       'type': 'SUV',
       'model': 'Tucson',
       'year': '2023',
@@ -74,7 +75,7 @@ class ServicesViewModel with ChangeNotifier{
       'availableTo': 'Feb 25',
     },
     {
-      'imageUrl': Assets.car,
+      'imageUrl': Assets.car3,
       'type': 'Hatchback',
       'model': 'Swift',
       'year': '2021',
@@ -86,7 +87,7 @@ class ServicesViewModel with ChangeNotifier{
       'availableTo': 'Feb 12',
     },
     {
-      'imageUrl': Assets.car,
+      'imageUrl': Assets.car4,
       'type': 'Truck',
       'model': 'F-150',
       'year': '2023',
@@ -98,7 +99,7 @@ class ServicesViewModel with ChangeNotifier{
       'availableTo': 'Mar 1',
     },
     {
-      'imageUrl': Assets.car,
+      'imageUrl': Assets.car5,
       'type': 'Coupe',
       'model': 'M4',
       'year': '2022',
@@ -311,6 +312,47 @@ class ServicesViewModel with ChangeNotifier{
 
     notifyListeners();
   }
+
+  Stream<QuerySnapshot> getCarServices() {
+    String searchQuery = searchSubController.text.trim().toLowerCase();
+    if (searchQuery.isEmpty) {
+      return FirebaseFirestore.instance.collection('car').snapshots();
+    }
+    else {
+      return FirebaseFirestore.instance
+          .collection('car')
+          .where('car_model', isGreaterThanOrEqualTo: searchQuery)
+          .where('car_model', isLessThanOrEqualTo: '$searchQuery\uf8ff')
+          .snapshots();
+    }
+  }
+  Stream<QuerySnapshot> getHomeServices() {
+    String searchQuery = searchSubController.text.trim().toLowerCase();
+    if (searchQuery.isEmpty) {
+      return FirebaseFirestore.instance.collection('home').snapshots();
+    }
+    else {
+      return FirebaseFirestore.instance
+          .collection('home')
+          .where('home_type', isGreaterThanOrEqualTo: searchQuery)
+          .where('home_type', isLessThanOrEqualTo: '$searchQuery\uf8ff')
+          .snapshots();
+    }
+  }
+  Stream<QuerySnapshot> getCameraServices() {
+    String searchQuery = searchSubController.text.trim().toLowerCase();
+    if (searchQuery.isEmpty) {
+      return FirebaseFirestore.instance.collection('camera').snapshots();
+    }
+    else {
+      return FirebaseFirestore.instance
+          .collection('camera')
+          .where('camera_brand', isGreaterThanOrEqualTo: searchQuery)
+          .where('camera_brand', isLessThanOrEqualTo: '$searchQuery\uf8ff')
+          .snapshots();
+    }
+  }
+
 
 
 }

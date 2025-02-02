@@ -116,7 +116,7 @@ class BookingDetailCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 height: SizeConfig.scaleHeight(200),
                 width: double.infinity,
@@ -148,9 +148,10 @@ class BookingDetailCard extends StatelessWidget {
               padding:  EdgeInsets.only(bottom: SizeConfig.scaleHeight(20)),
               child: Center(child: Text('$serviceType Information:', style: mediumTextStyle.copyWith(decoration: TextDecoration.underline), )),
             ),
+            BookingDetailRow(label: serviceType == 'Home' ? 'Type' : serviceType == 'Camera' ? 'Brand' : 'Model', value: model),
             BookingDetailRow(label: serviceType == 'Home' ? 'Bedrooms' : serviceType == 'Camera' ? 'Model' : 'Type', value: type),
             BookingDetailRow(label: serviceType == 'Home' ? 'Bathrooms' :serviceType == 'Camera' ? 'Lens Type' : 'Fuel', value: fuelType),
-            BookingDetailRow(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Model', value: year),
+            BookingDetailRow(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Year', value: year),
             BookingDetailRow(label: serviceType == 'Home' ? 'Furnished' :serviceType == 'Camera' ? 'Resolution' :'Transmission', value: transmission),
             BookingDetailRow(label: 'Location', value: location),
             Padding(

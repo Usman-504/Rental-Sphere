@@ -171,7 +171,7 @@ class BookingCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 height: SizeConfig.scaleHeight(200),
                 width: double.infinity,

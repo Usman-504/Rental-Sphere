@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
@@ -20,16 +21,18 @@ class SubServicesView extends StatelessWidget {
       create: (_)=>ServicesViewModel(),
       child: Consumer<ServicesViewModel>(
         builder: (context, vm, child) {
-          List<dynamic> serviceList = args['serviceType'] == 'Car'
-              ? vm.filteredCarServices
+          Stream<QuerySnapshot> serviceList = args['serviceType'] == 'Car'
+              ? vm.getCarServices()
               : args['serviceType'] == 'Home'
-              ? vm.filteredHomeServices
-              : vm.filteredCameraServices;
+              ? vm.getHomeServices()
+              : vm.getCameraServices();
           return Scaffold(
             backgroundColor: AppColors.scaffoldColor,
             body: Column(
               children: [
-                Header(controller: vm.searchSubController, ),
+                Header(controller: vm.searchSubController,
+                hintText: args['serviceType'] == 'Car' ? 'Search & Filter Cars By Model...' : args['serviceType'] == 'Home' ? 'Search & Filter Homes By Type...' : 'Filter Cameras By Brand...',
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -44,41 +47,105 @@ class SubServicesView extends StatelessWidget {
                           Text('${args['serviceType']} Services:', style: secondaryTextStyle),
                           SizedBox(
                             height: SizeConfig.screenHeight * 0.65,
-                            child: serviceList.isEmpty ? Center(
-                              child: Text('No ${args['serviceType']} Service Found', style: smallTextStyle,),
-                            ) :
-                            ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount:
-                              args['serviceType'] == 'Car' ?  vm.filteredCarServices.length :  args['serviceType'] == 'Home' ? vm.filteredHomeServices.length : vm.filteredCameraServices.length,
-                              itemBuilder: (context, index) {
-                                var item = args['serviceType'] == 'Car' ?  vm.filteredCarServices[index]:args['serviceType'] == 'Home' ?  vm.filteredHomeServices[index] : vm.filteredCameraServices[index];
-                                return InkWell(
-                                    onTap: (){
-                                      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.detailedServices, arguments: {
-                                        'imageUrl' : item['imageUrl'],
-                                        'serviceType' : args['serviceType'],
-                                        'price' : item['pricePerDay'],
-                                        'location' : item['location'],
-                                        'availableFrom' : item['availableFrom'],
-                                        'availableTo' : item['availableTo'],
-                                        'type' : args['serviceType'] == 'Camera' ? item['model'] : args['serviceType'] == 'Car' ? item['type'] : item['bedrooms'],
-                                        'model' : args['serviceType'] == 'Home' ? item['type'] : args['serviceType'] == 'Camera' ? item['brand'] : item['model'],
-                                        'transmission' : args['serviceType'] == 'Home' ? item['furnished']  : args['serviceType'] == 'Camera'? item['resolution'] : item['transmission'],
-                                        'year' : args['serviceType'] == 'Home' ? item['size'] : args['serviceType'] == 'Camera'? item['sensorType'] :  item['year'],
-                                        'fuelType' : args['serviceType'] == 'Home' ? item['bathrooms'] : args['serviceType'] == 'Camera'? item['lensType'] : item['fuelType'],
-                                      });
-                                    },
-                                    child:
-                                    ServiceContainer(
-                                      subService: true,
-                                      image: item['imageUrl'],
-                                      title: args['serviceType'] == 'Camera' ? 'Brand: ${item['brand']}' : 'Type: ${item['type']}',
-                                      subTitle: args['serviceType'] == 'Home' ? 'Bedrooms: ${item['bedrooms']}'  : 'Model: ${item['model']}',
-                                      price: 'Price: ${item['pricePerDay']} Pkr/day',
-                                      location: 'Location: ${item['location']}',
-                                    ));
-                              },),
+                            child: StreamBuilder(stream: serviceList,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    print('error');
+                                  }
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  }
+                                  if (snapshot.data!.docs.isEmpty) {
+                                    return Center(
+                                      child: Text('No ${args['serviceType']} Service Found', style: smallTextStyle,),
+                                    );
+                                  }
+                                  if (snapshot.data != null) {
+                                    return ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        var item = snapshot.data!.docs[index];
+                                        print(item['reviews']);
+                                        return InkWell(
+                                            onTap: () {
+                                              NavigationHelper
+                                                  .navigateWithSlideTransition(
+                                                  context: context,
+                                                  routeName: RoutesName
+                                                      .detailedServices,
+                                                  arguments: {
+                                                    'docId' : item.id,
+                                                    'reviews' : item['reviews'],
+                                                    'imageUrl': item['image_url'],
+                                                    'serviceType': args['serviceType'],
+                                                    'price': item['price'],
+                                                    'location': item['location'],
+                                                    'availableFrom': item['availableFrom'],
+                                                    'availableTo': item['availableTo'],
+                                                    'type': args['serviceType'] ==
+                                                        'Camera'
+                                                        ? item['camera_model']
+                                                        : args['serviceType'] ==
+                                                        'Car'
+                                                        ? item['car_type']
+                                                        : item['bedrooms'],
+                                                    'model': args['serviceType'] ==
+                                                        'Home'
+                                                        ? item['home_type'][0].toUpperCase() + item['home_type'].substring(1)
+                                                        : args['serviceType'] ==
+                                                        'Camera'
+                                                        ? item['camera_brand'][0].toUpperCase() + item['camera_brand'].substring(1)
+                                                        : item['car_model'][0].toUpperCase() + item['car_model'].substring(1),
+                                                    'transmission': args['serviceType'] ==
+                                                        'Home'
+                                                        ? item['furnished']
+                                                        : args['serviceType'] ==
+                                                        'Camera'
+                                                        ? item['resolution']
+                                                        : item['transmission'],
+                                                    'year': args['serviceType'] ==
+                                                        'Home'
+                                                        ? item['size']
+                                                        : args['serviceType'] ==
+                                                        'Camera'
+                                                        ? item['sensor_type']
+                                                        : item['year'],
+                                                    'fuelType': args['serviceType'] ==
+                                                        'Home'
+                                                        ? item['bathrooms']
+                                                        : args['serviceType'] ==
+                                                        'Camera'
+                                                        ? item['lens_type']
+                                                        : item['fuel_type'],
+                                                  });
+                                            },
+                                            child:
+                                            ServiceContainer(
+                                              subService: true,
+                                              image: item['image_url'],
+                                              title: args['serviceType'] ==
+                                                  'Camera'
+                                                  ? 'Brand: ${item['camera_brand'][0].toUpperCase() + item['camera_brand'].substring(1)}'
+                                                  : args['serviceType'] ==
+                                                  'Home' ? 'Type: ${item['home_type'][0].toUpperCase() + item['home_type'].substring(1)}' : 'Type: ${item['car_type']}',
+                                              subTitle: args['serviceType'] ==
+                                                  'Home'
+                                                  ? 'Bedrooms: ${item['bedrooms']}' : args['serviceType'] ==
+                                                  'Camera'
+                                                  ? 'Model: ${item['camera_model']}'
+                                                  : 'Model: ${item['car_model'][0].toUpperCase() + item['car_model'].substring(1)}',
+                                              price: 'Price: ${item['price'].toString()} Pkr/day',
+                                              location: 'Location: ${item['location']}',
+                                              rating: item['averageRating'],
+                                            ));
+                                      },);
+                                  }
+                                  return const CircularProgressIndicator();
+                                  },)
+
+
+                            ,
                           )
                         ],
                       ),
