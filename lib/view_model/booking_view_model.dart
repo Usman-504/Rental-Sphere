@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rental_sphere/res/components/navigation_helper.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
-
 import '../utils/utils.dart';
 
 class BookingViewModel with ChangeNotifier{
@@ -31,16 +30,47 @@ TimeOfDay? get selectedTime => _selectedTime;
 int _duration = 1;
 int get duration => _duration;
 
+DateTime? availableStartDate;
+DateTime? availableEndDate;
+
+void setAvailableDates(DateTime startDate, DateTime endDate) {
+ availableStartDate = startDate;
+ availableEndDate = endDate;
+ notifyListeners();
+}
+
+
+
+
+bool isDateAvailable(DateTime selectedDate) {
+ if (availableStartDate == null || availableEndDate == null) {
+  return true;
+ }
+ return (selectedDate.isAfter(availableStartDate!) || selectedDate.isAtSameMomentAs(availableStartDate!)) &&
+     (selectedDate.isBefore(availableEndDate!) || selectedDate.isAtSameMomentAs(availableEndDate!));
+}
+
 void selectDate(BuildContext context, TextEditingController controller) async {
+ DateTime effectiveFirstDate = availableStartDate != null && availableStartDate!.isAfter(DateTime.now())
+     ? availableStartDate!
+     : DateTime.now();
+
+ DateTime effectiveLastDate = availableEndDate != null && availableEndDate!.isAfter(DateTime.now())
+     ? availableEndDate!
+     : DateTime.now();
  _selectedDate = await showDatePicker(
   context: context,
   initialDate: DateTime.now(),
-  firstDate: DateTime(2000),
-  lastDate: DateTime(2100),
+  firstDate: effectiveFirstDate,
+  lastDate: effectiveLastDate,
  );
  if (_selectedDate != null) {
-  controller.text = DateFormat('MM/dd/yyyy').format(_selectedDate!);
-  calculateDuration();
+  if (isDateAvailable(_selectedDate!)) {
+   controller.text = DateFormat('MM/dd/yyyy').format(_selectedDate!);
+   calculateDuration();
+  } else {
+   Utils.flushBarMessage('Service Not Available Now', context, true);
+  }
  }
  notifyListeners();
 }

@@ -44,7 +44,22 @@ class SubServicesView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${args['serviceType']} Services:', style: secondaryTextStyle),
+                          Padding(
+                            padding:  EdgeInsets.only(bottom: SizeConfig.scaleHeight(15)),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    Navigator.pop(context);
+                                  },
+                                    child: Icon(Icons.arrow_back, size: 30,)),
+                                SizedBox(
+                                  width: SizeConfig.scaleWidth(10),
+                                ),
+                                Text('${args['serviceType']} Services:', style: secondaryTextStyle),
+                              ],
+                            ),
+                          ),
                           SizedBox(
                             height: SizeConfig.screenHeight * 0.65,
                             child: StreamBuilder(stream: serviceList,
@@ -76,6 +91,7 @@ class SubServicesView extends StatelessWidget {
                                                       .detailedServices,
                                                   arguments: {
                                                     'docId' : item.id,
+                                                    'ownerId' : item['userId'],
                                                     'reviews' : item['reviews'],
                                                     'imageUrl': item['image_url'],
                                                     'serviceType': args['serviceType'],

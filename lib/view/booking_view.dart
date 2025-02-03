@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/custom_button.dart';
@@ -16,13 +17,21 @@ class BookingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateFormat format = DateFormat('MM/dd/yyyy');
+    DateTime availableStartDate = format.parse(args['startDate']);
+    DateTime availableEndDate = format.parse(args['endDate']);
     return ChangeNotifierProvider(
-      create: (_)=>BookingViewModel(),
+      create: (_)=>BookingViewModel()..setAvailableDates(availableStartDate, availableEndDate),
       child: Consumer<BookingViewModel>(
           builder: (context, vm, child) {
             return Scaffold(
               backgroundColor: AppColors.scaffoldColor,
               appBar: AppBar(
+                leading: InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Icon(Icons.arrow_back, size: 30, color: AppColors.whiteColor,)),
                 backgroundColor: AppColors.blackColor,
                 centerTitle: true,
                 title:  Text("${args['model']} Booking", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
@@ -89,6 +98,7 @@ class BookingView extends StatelessWidget {
                         'start' : args['serviceType'] == 'Home'? 'Check-In' : 'Pick-Up',
                         'endTime' : vm.dropOffTimeController.text.trim(),
                         'end' : args['serviceType'] == 'Home' ? 'Check-Out' : args['serviceType'] == 'Camera' ? 'Return' : 'Drop-Off',
+                        'ownerId' : args['ownerId'],
                       });
                   },
                   ),

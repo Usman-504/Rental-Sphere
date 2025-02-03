@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/custom_button.dart';
@@ -8,6 +9,7 @@ import 'package:rental_sphere/res/components/navigation_helper.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/utils/styles.dart';
+import 'package:rental_sphere/utils/utils.dart';
 import 'package:rental_sphere/view_model/service_detail_view_model.dart';
 
 
@@ -17,13 +19,21 @@ class ServiceDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateFormat format = DateFormat('MM/dd/yyyy');
+    DateTime availableStartDate = format.parse(args['availableFrom']);
+    DateTime availableEndDate = format.parse(args['availableTo']);
     return ChangeNotifierProvider(
-      create: (_)=>ServiceDetailViewModel(),
+      create: (_)=>ServiceDetailViewModel()..setAvailableDates(availableStartDate, availableEndDate),
       child: Consumer<ServiceDetailViewModel>(
         builder: (context, vm, child) {
           return Scaffold(
             backgroundColor: AppColors.scaffoldColor,
             appBar: AppBar(
+              leading: InkWell(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Icon(Icons.arrow_back, size: 30, color: AppColors.whiteColor,)),
               backgroundColor: AppColors.blackColor,
               centerTitle: true,
               title:  Text("${args['serviceType']} Rental", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
@@ -52,6 +62,8 @@ class ServiceDetailView extends StatelessWidget {
                 },
                   loading: vm.loading,
                   reviews: args['reviews'],
+                  ownerId: args['ownerId'],
+                  available: vm.isDateAvailable(DateTime.now()),
                 ),
               ),
             ),
@@ -65,6 +77,7 @@ class ServiceDetailView extends StatelessWidget {
 class ServiceDetailCard extends StatelessWidget {
   final String imageUrl;
   final String serviceType;
+  final String ownerId;
   final String type;
   final String model;
   final String year;
@@ -73,6 +86,7 @@ class ServiceDetailCard extends StatelessWidget {
   final int pricePerDay;
   final String location;
   final String availableFrom;
+  final bool available;
   final String availableTo;
   final double rating;
   final TextEditingController controller;
@@ -95,11 +109,12 @@ class ServiceDetailCard extends StatelessWidget {
     required this.availableTo,
     required this.serviceType,
     required this.rating,
-    required this.controller, required this.updateRatting, required this.focusNode, required this.submitReview, required this.loading, required this.reviews,
+    required this.controller, required this.updateRatting, required this.focusNode, required this.submitReview, required this.loading, required this.reviews, required this.ownerId, required this.available,
   });
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<ServiceDetailViewModel>(context, listen: false);
     return Card(
       color: AppColors.whiteColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -145,6 +160,7 @@ class ServiceDetailCard extends StatelessWidget {
                   width: SizeConfig.scaleWidth(50),
                 ),
                 Expanded(child: CustomButton(text: 'Rent $serviceType', onPress: (){
+                  if(available){
                   NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.booking, arguments: {
                     'serviceType' : serviceType,
                     'model' : model,
@@ -155,7 +171,14 @@ class ServiceDetailCard extends StatelessWidget {
                     'imageUrl' : imageUrl,
                     'location' : location,
                     'price' : pricePerDay,
+                    'ownerId' : ownerId,
+                    'startDate' : availableFrom,
+                    'endDate' : availableTo,
                   });
+                }
+                else{
+                  Utils.flushBarMessage('Service Not Available', context, true);
+                  }
                 }))
               ],
             ),
@@ -169,14 +192,14 @@ class ServiceDetailCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Rate This $serviceType:", style: smallTextStyle.copyWith( fontWeight: FontWeight.bold)),
+                Text("Rate This Service:", style: smallTextStyle.copyWith( fontWeight: FontWeight.bold)),
                 RatingBar.builder(
                   initialRating: rating,
                     minRating: 1,
                     maxRating: 5,
                     allowHalfRating: true,
                     tapOnlyMode: true,
-                    itemSize: 25,
+                    itemSize: 20,
                     itemBuilder: (BuildContext context, int index) {
                       if (index + 1 <= rating) {
                         return const Icon(Icons.star, color: Colors.amber); // Fully filled star
@@ -188,7 +211,7 @@ class ServiceDetailCard extends StatelessWidget {
                     },
                     onRatingUpdate: updateRatting),
                 rating == 0 ? SizedBox.shrink() :
-                Text(rating.toString(), style: smallTextStyle,),
+                Text('(${rating.toString()})', style: smallTextStyle,),
               ],
             ),
             if(rating >0)
@@ -227,24 +250,82 @@ class ServiceDetailCard extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: reviews.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-
-                            leading: Container(
-                              height: SizeConfig.scaleHeight(150),
-                              width: SizeConfig.scaleHeight(150),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                image: DecorationImage(image: NetworkImage(reviews[index]['image']))
+                      return Padding(
+                        padding:  EdgeInsets.symmetric(vertical: SizeConfig.scaleHeight(10)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                            flex: 1,
+                            child: Container(
+                                height: SizeConfig.scaleHeight(80),
+                                width: SizeConfig.scaleHeight(80),
+                                decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                  boxShadow: normalBoxShadow,
+                                    shape: BoxShape.rectangle,
+                                  image: DecorationImage(image: NetworkImage(reviews[index]['image']),fit: BoxFit.cover)
+                                ),
                               ),
-                            ),
-                            title: Text(reviews[index]['name']),
-                            subtitle: Text(reviews[index]['review'].toString()),
                           ),
-                          Text(reviews[index]['review']),
-                        ],
+                                SizedBox(
+                                  width: SizeConfig.scaleWidth(15),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(reviews[index]['name'].toString()[0].toUpperCase() + reviews[index]['name'].toString().substring(1), style: mediumTextStyle,),
+                                          Text(vm.formatedDate(reviews[index]['date']), style: smallTextStyle,),
+                        
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          RatingBar.builder(
+                                            ignoreGestures: true,
+                                            initialRating: reviews[index]['rating'].toDouble(), // Ensure it's a double
+                                            allowHalfRating: true,
+                                            tapOnlyMode: true,
+                                            itemCount: 5,
+                                            itemSize: 20,
+                        
+                                            itemBuilder: (BuildContext context, int starIndex) {
+                                              double rating = reviews[index]['rating'].toDouble();
+                        
+                                              if (starIndex + 1 <= rating) {
+                                                return const Icon(Icons.star, color: Colors.amber); // Fully filled star
+                                              } else if (starIndex + 0.5 <= rating) {
+                                                return const Icon(Icons.star_half, color: Colors.amber); // Half-filled star
+                                              } else {
+                                                return const Icon(Icons.star_border, color: Colors.grey);
+                                              }
+                                            },
+                                            onRatingUpdate: (_) {},
+                                          ),
+                                          Text('(${reviews[index]['rating']})', style: smallTextStyle,),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding:  EdgeInsets.only(top: SizeConfig.scaleHeight(10)),
+                              child: Text(
+                                textAlign: TextAlign.justify,
+                                reviews[index]['review'], style: smallTextStyle,),
+                            ),
+                          ],
+                        ),
                       );
                     },)
               ],

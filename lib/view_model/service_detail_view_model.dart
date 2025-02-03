@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/utils.dart';
@@ -13,10 +13,28 @@ class ServiceDetailViewModel  with ChangeNotifier{
 
   FocusNode reviewFocusNode = FocusNode();
 
+
   void updateRating(rating){
     _rating = rating;
     print(_rating);
     notifyListeners();
+  }
+
+  DateTime? availableStartDate;
+  DateTime? availableEndDate;
+
+  void setAvailableDates(DateTime startDate, DateTime endDate) {
+    availableStartDate = startDate;
+    availableEndDate = endDate;
+    notifyListeners();
+  }
+
+  bool isDateAvailable(DateTime selectedDate) {
+    if (availableStartDate == null || availableEndDate == null) {
+      return true;
+    }
+    return (selectedDate.isAfter(availableStartDate!) || selectedDate.isAtSameMomentAs(availableStartDate!)) &&
+        (selectedDate.isBefore(availableEndDate!) || selectedDate.isAtSameMomentAs(availableEndDate!));
   }
 
   bool _loading = false;
@@ -66,7 +84,7 @@ class ServiceDetailViewModel  with ChangeNotifier{
           'user_id': user.uid,
           'name': name,
           'image': image,
-          'date': DateTime.now(),
+          'date': DateFormat('MM/dd/yyyy').format(DateTime.now()),
         }
       ]),
     }).then((value) async {
@@ -118,6 +136,24 @@ class ServiceDetailViewModel  with ChangeNotifier{
     _rating = 0;
     reviewController.clear();
     notifyListeners();
+  }
+
+
+  String formatedDate(String dateString){
+    DateFormat format = DateFormat('MM/dd/yyyy');
+    DateTime date = format.parse(dateString);
+    final DateTime now = DateTime.now();
+    final Duration difference = now.difference(date);
+    if (difference.inDays == 0) {
+      return '0 days ago';
+    }
+    else if (difference.inDays == 1){
+      return '1 day ago';
+    }
+    else {
+      print(difference.inDays);
+      return '${difference.inDays} days ago';
+    }
   }
 
 

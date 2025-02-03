@@ -9,7 +9,7 @@ import '../../view_model/services_view_model.dart';
 import '../colors.dart';
 import 'custom_textfield.dart';
 
-class Header extends StatelessWidget {
+class Header extends StatefulWidget {
   final TextEditingController controller;
   final String? hintText;
   const Header({
@@ -17,9 +17,21 @@ class Header extends StatelessWidget {
   });
 
   @override
+  State<Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<ServicesViewModel>(context, listen: false).fetchUserData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    final vm = Provider.of<ServicesViewModel>(context, listen: false);
+    final vm = Provider.of<ServicesViewModel>(context);
     return Container(
       decoration:
       const BoxDecoration(color: AppColors.blackColor),
@@ -66,8 +78,8 @@ class Header extends StatelessWidget {
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: vm.image!.isNotEmpty
-                                        ? NetworkImage(vm.image!)
+                                    image: vm.image.isNotEmpty
+                                        ? NetworkImage(vm.image)
                                         : const AssetImage(
                                         Assets.dp)),
                                 shape: BoxShape.circle),
@@ -94,9 +106,9 @@ class Header extends StatelessWidget {
                         color: AppColors.hintTextColor),
                     bottom: 0,
                     focusNode: vm.searchFocusNode,
-                    controller: controller,
+                    controller: widget.controller,
                     keyboardType: TextInputType.text,
-                    hintText: hintText ?? 'Search & Filter listings...',
+                    hintText: widget.hintText ?? 'Search & Filter listings...',
                     current: vm.searchFocusNode,
                     next: null),
               ),

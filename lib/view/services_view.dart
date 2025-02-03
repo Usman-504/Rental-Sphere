@@ -34,7 +34,10 @@ class ServicesView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                         Text('All Services:', style: secondaryTextStyle),
+                         Padding(
+                           padding:  EdgeInsets.only(bottom: SizeConfig.scaleHeight(15)),
+                           child: Text('All Services:', style: secondaryTextStyle),
+                         ),
                           SizedBox(
                              height: SizeConfig.screenHeight * 0.6,
                             child:  vm.filteredServices.isEmpty ? Center(

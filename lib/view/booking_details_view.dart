@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/custom_button.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/utils/styles.dart';
-import 'package:rental_sphere/view_model/service_detail_view_model.dart';
 
 
 class BookingDetailView extends StatelessWidget {
@@ -13,51 +11,45 @@ class BookingDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_)=>ServiceDetailViewModel(),
-      child: Consumer<ServiceDetailViewModel>(
-          builder: (context, vm, child) {
-            return Scaffold(
-              backgroundColor: AppColors.scaffoldColor,
-              appBar: AppBar(
-                backgroundColor: AppColors.blackColor,
-                centerTitle: true,
-                title:  Text("Booking Details", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
-                automaticallyImplyLeading: false,
-              ),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding:  EdgeInsets.all(SizeConfig.scaleHeight(15)),
-                  child: BookingDetailCard(
-                    rating: vm.rating,
-                    controller: vm.reviewController,
-                    imageUrl: args['imageUrl'],
-                    type: args['type'],
-                    model: args['model'],
-                    year: args['year'],
-                    transmission: args['transmission'],
-                    fuelType: args['fuelType'],
-                    pricePerDay: args['price'],
-                    location: args['location'],
-                    serviceType: args['serviceType'],
-                    updateRatting: (rating){
-                    vm.updateRating(rating);
-                  }, focusNode: vm.reviewFocusNode,
-                    name: args['name'],
-                    phone: args['phone'],
-                    address: args['address'],
-                    startDate: args['startDate'],
-                    endDate: args['endDate'],
-                    startTime: args['startTime'],
-                    start: args['start'],
-                    endTime: args['endTime'],
-                    end: args['end'],
-                    duration: args['duration'],
-                  ),
-                ),
-              ),
-            );
-          }
+    return Scaffold(
+      backgroundColor: AppColors.scaffoldColor,
+      appBar: AppBar(
+        leading: InkWell(
+            onTap: (){
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back, size: 30, color: AppColors.whiteColor,)),
+        backgroundColor: AppColors.blackColor,
+        centerTitle: true,
+        title:  Text("Booking Details", style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),),
+        automaticallyImplyLeading: false,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding:  EdgeInsets.all(SizeConfig.scaleHeight(15)),
+          child: BookingDetailCard(
+            imageUrl: args['imageUrl'],
+            type: args['type'],
+            model: args['model'],
+            year: args['year'],
+            transmission: args['transmission'],
+            fuelType: args['fuelType'],
+            pricePerDay: args['price'],
+            location: args['location'],
+            serviceType: args['serviceType'],
+
+            name: args['name'],
+            phone: args['phone'],
+            address: args['address'],
+            startDate: args['startDate'],
+            endDate: args['endDate'],
+            startTime: args['startTime'],
+            start: args['start'],
+            endTime: args['endTime'],
+            end: args['end'],
+            duration: args['duration'],
+          ),
+        ),
       ),
     );
   }
@@ -83,10 +75,7 @@ class BookingDetailCard extends StatelessWidget {
   final String fuelType;
   final int pricePerDay;
   final String location;
-  final double rating;
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final Function(double) updateRatting;
+
   const BookingDetailCard({
     super.key,
     required this.imageUrl,
@@ -98,8 +87,7 @@ class BookingDetailCard extends StatelessWidget {
     required this.pricePerDay,
     required this.location,
     required this.serviceType,
-    required this.rating,
-    required this.controller, required this.updateRatting, required this.focusNode, required this.name, required this.phone, required this.address, required this.startDate, required this.endDate, required this.startTime, required this.endTime, required this.start, required this.end, required this.duration,
+   required this.name, required this.phone, required this.address, required this.startDate, required this.endDate, required this.startTime, required this.endTime, required this.start, required this.end, required this.duration,
   });
 
   @override

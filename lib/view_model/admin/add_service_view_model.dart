@@ -160,8 +160,6 @@ class AddServiceViewModel with ChangeNotifier{
       var price = int.tryParse(stringPrice);
       setLoading(true);
       await FirebaseFirestore.instance.collection(selectedCategory.toString().toLowerCase()).doc().set({
-        'ownerName': name,
-        'ownerEmail': email,
         'image_url': _imageUrl,
         'image_path': _imagePath,
         'category': selectedCategory.toString().toLowerCase(),

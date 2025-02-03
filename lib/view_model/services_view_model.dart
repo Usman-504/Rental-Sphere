@@ -13,13 +13,14 @@ class ServicesViewModel with ChangeNotifier{
   String searchQuery = '';
   String searchSubQuery = '';
 
-  String? _image = '';
-  String? get image => _image;
+ late String _image = '';
+  String get image => _image;
 
-  // void fetchUserData() async{
-  //   SharedPreferences sp = await SharedPreferences.getInstance();
-  //   _image = sp.getString('profile_url');
-  // }
+  void fetchUserData() async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    _image = sp.getString('profile_url') ?? '';
+   notifyListeners();
+  }
 
   final List<Map<String, dynamic>> allServices = [
     {
