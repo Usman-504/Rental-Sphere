@@ -177,7 +177,7 @@ class ServiceDetailCard extends StatelessWidget {
                   });
                 }
                 else{
-                  Utils.flushBarMessage('Service Not Available', context, true);
+                  Utils.flushBarMessage('Service Not Available Right Now', context, true);
                   }
                 }))
               ],

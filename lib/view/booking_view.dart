@@ -7,7 +7,6 @@ import 'package:rental_sphere/res/components/datetime_textfield.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/utils/styles.dart';
 import 'package:rental_sphere/view_model/booking_view_model.dart';
-
 import '../res/components/custom_textfield.dart';
 
 
@@ -201,7 +200,7 @@ class BookingCard extends StatelessWidget {
             CustomTextField(
               focusNode: phoneFocusNode,
               controller: phoneController,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.number,
               hintText: 'Enter Your Phone Number',
               current: phoneFocusNode,
               next: addressFocusNode,

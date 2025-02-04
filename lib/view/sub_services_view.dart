@@ -10,28 +10,35 @@ import 'package:rental_sphere/view_model/services_view_model.dart';
 import '../res/components/custom_header.dart';
 import '../res/components/services_container.dart';
 
-class SubServicesView extends StatelessWidget {
+class SubServicesView extends StatefulWidget {
 
   final Map args;
   const SubServicesView({super.key,  required this.args});
 
+  @override
+  State<SubServicesView> createState() => _SubServicesViewState();
+}
+
+class _SubServicesViewState extends State<SubServicesView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_)=>ServicesViewModel(),
       child: Consumer<ServicesViewModel>(
         builder: (context, vm, child) {
-          Stream<QuerySnapshot> serviceList = args['serviceType'] == 'Car'
+          Stream<QuerySnapshot> serviceList = widget.args['serviceType'] == 'Car'
               ? vm.getCarServices()
-              : args['serviceType'] == 'Home'
+              : widget.args['serviceType'] == 'Home'
               ? vm.getHomeServices()
               : vm.getCameraServices();
           return Scaffold(
             backgroundColor: AppColors.scaffoldColor,
             body: Column(
               children: [
-                Header(controller: vm.searchSubController,
-                hintText: args['serviceType'] == 'Car' ? 'Search & Filter Cars By Model...' : args['serviceType'] == 'Home' ? 'Search & Filter Homes By Type...' : 'Filter Cameras By Brand...',
+                Header(
+                  onChanged: vm.onChanged,
+                  controller: vm.searchSubController,
+                hintText: widget.args['serviceType'] == 'Car' ? 'Search & Filter Cars By Model...' : widget.args['serviceType'] == 'Home' ? 'Search & Filter Homes By Type...' : 'Filter Cameras By Brand...',
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -56,7 +63,7 @@ class SubServicesView extends StatelessWidget {
                                 SizedBox(
                                   width: SizeConfig.scaleWidth(10),
                                 ),
-                                Text('${args['serviceType']} Services:', style: secondaryTextStyle),
+                                Text('${widget.args['serviceType']} Services:', style: secondaryTextStyle),
                               ],
                             ),
                           ),
@@ -72,7 +79,7 @@ class SubServicesView extends StatelessWidget {
                                   }
                                   if (snapshot.data!.docs.isEmpty) {
                                     return Center(
-                                      child: Text('No ${args['serviceType']} Service Found', style: smallTextStyle,),
+                                      child: Text('No ${widget.args['serviceType']} Service Found', style: smallTextStyle,),
                                     );
                                   }
                                   if (snapshot.data != null) {
@@ -94,43 +101,43 @@ class SubServicesView extends StatelessWidget {
                                                     'ownerId' : item['userId'],
                                                     'reviews' : item['reviews'],
                                                     'imageUrl': item['image_url'],
-                                                    'serviceType': args['serviceType'],
+                                                    'serviceType': widget.args['serviceType'],
                                                     'price': item['price'],
                                                     'location': item['location'],
                                                     'availableFrom': item['availableFrom'],
                                                     'availableTo': item['availableTo'],
-                                                    'type': args['serviceType'] ==
+                                                    'type': widget.args['serviceType'] ==
                                                         'Camera'
                                                         ? item['camera_model']
-                                                        : args['serviceType'] ==
+                                                        : widget.args['serviceType'] ==
                                                         'Car'
                                                         ? item['car_type']
                                                         : item['bedrooms'],
-                                                    'model': args['serviceType'] ==
+                                                    'model': widget.args['serviceType'] ==
                                                         'Home'
                                                         ? item['home_type'][0].toUpperCase() + item['home_type'].substring(1)
-                                                        : args['serviceType'] ==
+                                                        : widget.args['serviceType'] ==
                                                         'Camera'
                                                         ? item['camera_brand'][0].toUpperCase() + item['camera_brand'].substring(1)
                                                         : item['car_model'][0].toUpperCase() + item['car_model'].substring(1),
-                                                    'transmission': args['serviceType'] ==
+                                                    'transmission': widget.args['serviceType'] ==
                                                         'Home'
                                                         ? item['furnished']
-                                                        : args['serviceType'] ==
+                                                        : widget.args['serviceType'] ==
                                                         'Camera'
                                                         ? item['resolution']
                                                         : item['transmission'],
-                                                    'year': args['serviceType'] ==
+                                                    'year': widget.args['serviceType'] ==
                                                         'Home'
                                                         ? item['size']
-                                                        : args['serviceType'] ==
+                                                        : widget.args['serviceType'] ==
                                                         'Camera'
                                                         ? item['sensor_type']
                                                         : item['year'],
-                                                    'fuelType': args['serviceType'] ==
+                                                    'fuelType': widget.args['serviceType'] ==
                                                         'Home'
                                                         ? item['bathrooms']
-                                                        : args['serviceType'] ==
+                                                        : widget.args['serviceType'] ==
                                                         'Camera'
                                                         ? item['lens_type']
                                                         : item['fuel_type'],
@@ -140,14 +147,14 @@ class SubServicesView extends StatelessWidget {
                                             ServiceContainer(
                                               subService: true,
                                               image: item['image_url'],
-                                              title: args['serviceType'] ==
+                                              title: widget.args['serviceType'] ==
                                                   'Camera'
                                                   ? 'Brand: ${item['camera_brand'][0].toUpperCase() + item['camera_brand'].substring(1)}'
-                                                  : args['serviceType'] ==
+                                                  : widget.args['serviceType'] ==
                                                   'Home' ? 'Type: ${item['home_type'][0].toUpperCase() + item['home_type'].substring(1)}' : 'Type: ${item['car_type']}',
-                                              subTitle: args['serviceType'] ==
+                                              subTitle: widget.args['serviceType'] ==
                                                   'Home'
-                                                  ? 'Bedrooms: ${item['bedrooms']}' : args['serviceType'] ==
+                                                  ? 'Bedrooms: ${item['bedrooms']}' : widget.args['serviceType'] ==
                                                   'Camera'
                                                   ? 'Model: ${item['camera_model']}'
                                                   : 'Model: ${item['car_model'][0].toUpperCase() + item['car_model'].substring(1)}',

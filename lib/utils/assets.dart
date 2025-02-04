@@ -10,8 +10,8 @@ class Assets {
   static const String car3 = 'assets/images/car3.jpeg';
   static const String car4 = 'assets/images/car4.jpeg';
   static const String car5 = 'assets/images/car5.jpeg';
-
   static const String home = 'assets/images/home.jpg';
+  static const String home1 = 'assets/images/home1.png';
 
   static const String camera = 'assets/images/camera.jpeg';
 }

@@ -51,15 +51,15 @@ class _NavBarViewState extends State<NavBarView> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: _buildNavBarIcon(Icons.call_to_action, vm.myIndex == 2),
+                  icon: _buildNavBarIcon(Icons.call_to_action, vm.myIndex == 1),
                   label: 'Orders',
                 ),
                 BottomNavigationBarItem(
-                  icon: _buildNavBarIcon(Icons.chat, vm.myIndex == 3),
+                  icon: _buildNavBarIcon(Icons.chat, vm.myIndex == 2),
                   label: 'Chat',
                 ),
                 BottomNavigationBarItem(
-                  icon: _buildNavBarIcon(Icons.account_circle, vm.myIndex == 4),
+                  icon: _buildNavBarIcon(Icons.account_circle, vm.myIndex == 3),
                   label: 'Profile',
                 ),
               ],

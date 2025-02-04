@@ -142,9 +142,7 @@ class AddServiceViewModel with ChangeNotifier{
   }
 
   void addService(BuildContext context) async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    final name = sp.getString('name');
-    final email = sp.getString('email');
+
     String? validation = validateFields();
     if(validation != null){
       Utils.flushBarMessage(validation, context, true);

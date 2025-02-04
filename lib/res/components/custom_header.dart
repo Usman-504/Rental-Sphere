@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +9,13 @@ import '../colors.dart';
 import 'custom_textfield.dart';
 
 class Header extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
+  final bool home;
   final String? hintText;
+  final Function(String?)? onChanged;
   const Header({
-    super.key, required this.controller, this.hintText,
+    super.key,  this.controller, this.hintText, this.onChanged,
+    this. home = false,
   });
 
   @override
@@ -89,6 +91,7 @@ class _HeaderState extends State<Header> {
                 ),
               ],
             ),
+            if(widget.home == false)
             Padding(
               padding: EdgeInsets.only(
                 top: SizeConfig.scaleHeight(25),
@@ -96,6 +99,7 @@ class _HeaderState extends State<Header> {
               child: SizedBox(
                 height: SizeConfig.scaleWidth(60),
                 child: CustomTextField(
+                  onChanged: widget.onChanged,
                     cursorColor: AppColors.whiteColor,
                     borderColor: AppColors.whiteColor,
                     textStyle:  mediumTextStyle.copyWith(
@@ -106,13 +110,20 @@ class _HeaderState extends State<Header> {
                         color: AppColors.hintTextColor),
                     bottom: 0,
                     focusNode: vm.searchFocusNode,
-                    controller: widget.controller,
+                    controller: widget.controller!,
                     keyboardType: TextInputType.text,
                     hintText: widget.hintText ?? 'Search & Filter listings...',
                     current: vm.searchFocusNode,
                     next: null),
               ),
             ),
+            if(widget.home == true)
+              Padding(
+                padding: EdgeInsets.only(
+                  top: SizeConfig.scaleHeight(25),
+                ),
+                child: Text('Welcome To Rental Sphere', style: primaryTextStyle.copyWith(color: AppColors.whiteColor, fontWeight: FontWeight.normal, fontSize: SizeConfig.scaleWidth(25)),),
+              ),
           ],
         ),
       ),
