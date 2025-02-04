@@ -113,7 +113,7 @@ class HomeView extends StatelessWidget {
         return SizedBox(
           height: SizeConfig.scaleHeight(300),
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Enables horizontal scrolling
+            scrollDirection: Axis.horizontal,
             child: Row(
               children: List.generate(
                 snapshot.data!.docs.length > 3 ? 3 : snapshot.data!.docs.length,
