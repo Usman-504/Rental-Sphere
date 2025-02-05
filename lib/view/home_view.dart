@@ -130,6 +130,9 @@ class HomeView extends StatelessWidget {
                             'docId' : item.id,
                             'ownerId' : item['userId'],
                             'reviews' : item['reviews'],
+                            'images': item['image_urls'],
+                            'ownerImage': item['ownerImage'],
+                            'ownerName': item['ownerName'],
                             'imageUrl': item['image_url'],
                             'serviceType': category,
                             'price': item['price'],
@@ -189,7 +192,6 @@ class HomeView extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Overlay with gradient effect
                           Container(
                             height: SizeConfig.scaleHeight(250),
                             width: SizeConfig.scaleHeight(250),
@@ -205,7 +207,6 @@ class HomeView extends StatelessWidget {
                               ),
                             ),
                           ),
-                          // Text Overlay
                           Positioned(
                             bottom: SizeConfig.scaleHeight(15),
                             child: Container(

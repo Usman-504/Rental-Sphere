@@ -45,17 +45,17 @@ class AddServiceView extends StatelessWidget {
                         child: Container(
                           height: SizeConfig.scaleHeight(250),
                           decoration: BoxDecoration(
-                              image: vm.file != null
+                              image: vm.imageFile != null
                                   ? DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: FileImage(File(vm.file!.path)))
+                                  image: FileImage(File(vm.imageFile!.path)))
                                   : null,
                             color: AppColors.whiteColor,
                             borderRadius: BorderRadius.circular(5),
                             border: Border.all(width: 1, color: AppColors.blackColor)
                           ),
                           child: Center(
-                            child: vm.file == null ?
+                            child: vm.imageFile == null ?
                             Text(vm.selectedCategory != null ? 'Upload ${vm.selectedCategory} Image' : 'Upload Image',
                             style: mediumTextStyle,
                             ) : null,
@@ -63,6 +63,70 @@ class AddServiceView extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Text(
+                      'Gallery Images*',
+                      style: mediumTextStyle,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Row(
+                            children: List.generate(vm.files.length, (index) {
+                              return Stack(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(5),
+                                    width: SizeConfig.scaleHeight(130),
+                                    height: SizeConfig.scaleHeight(130),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(image: FileImage(File(vm.files[index].path),), fit: BoxFit.cover),
+                                      border: Border.all(color: AppColors.blackColor, width: 2),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+
+                                  ),
+                                  Positioned(
+                                      top: SizeConfig.scaleHeight(10),
+                                      right: SizeConfig.scaleHeight(10),
+                                      child: InkWell(
+                                        onTap: (){
+                                          vm.removeImage(index);
+                                        },
+                                        child: Container(
+                                            height: SizeConfig.scaleHeight(30),
+                                            width: SizeConfig.scaleHeight(30),
+                                            decoration: BoxDecoration(
+                                                color: AppColors.whiteColor,
+                                                borderRadius: BorderRadius.circular(5)
+                                            ),
+                                            child: Icon(Icons.close, color: Colors.red,)),
+                                      )
+                                  ),
+
+                                ],
+                              );
+                            }),
+                          ),
+                          Container(
+                            width: SizeConfig.scaleHeight(130),
+                            height: SizeConfig.scaleHeight(130),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.blackColor, width: 2),
+                              borderRadius: BorderRadius.circular(5),
+                              color: AppColors.whiteColor
+                            ),
+                            child: InkWell(
+                                onTap: (){
+                                  vm.pickImages();
+                                },
+                                child: Icon(Icons.add, color: AppColors.blackColor, size: 40,)),
+                          ),
+
+                        ],
+                      ),
+                    ),
+
                     Text( vm.selectedCategory != null && vm.selectedCategory == 'Home' ? 'Home Type*' : vm.selectedCategory != null && vm.selectedCategory == 'Camera' ? 'Camera Brand*' :
                       'Car Model*',
                       style: mediumTextStyle,

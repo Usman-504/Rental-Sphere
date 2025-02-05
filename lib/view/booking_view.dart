@@ -178,13 +178,13 @@ class BookingCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                imageUrl,
-                height: SizeConfig.scaleHeight(200),
-                width: double.infinity,
-                fit: BoxFit.cover,
+            Container(
+              height: SizeConfig.scaleHeight(200),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                      image: NetworkImage(imageUrl), fit: BoxFit.cover)
               ),
             ),
             Text('Name*', style: mediumTextStyle),

@@ -14,8 +14,11 @@ class AddServiceViewModel with ChangeNotifier{
   String? _selectedCategory;
   String? get selectedCategory => _selectedCategory;
 
-  XFile? _file;
-  XFile? get file => _file;
+  XFile? _imageFile;
+  XFile? get imageFile => _imageFile;
+
+  List<XFile> _files = [];
+  List<XFile> get files => _files;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -52,6 +55,12 @@ class AddServiceViewModel with ChangeNotifier{
   String _imagePath = '';
   String get imagePath => _imagePath;
 
+  List<String> _imageUrls = [];
+  List<String> get imageUrls => _imageUrls;
+
+  List<String> _imagePaths = [];
+  List<String> get imagePaths => _imagePaths;
+
   List<String> categories = ['Car', 'Home', 'Camera'];
 
   void initializeCategory(){
@@ -67,7 +76,28 @@ class AddServiceViewModel with ChangeNotifier{
 
   void pickImage() async {
     ImagePicker imagePicker = ImagePicker();
-    _file = await imagePicker.pickImage(source: ImageSource.gallery);
+    _imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    notifyListeners();
+  }
+
+  // void pickImages() async {
+  //   ImagePicker imagePicker = ImagePicker();
+  //   List<XFile>? selectedFiles = await imagePicker.pickMultiImage();
+  //   if (selectedFiles.isNotEmpty) {
+  //     _files = selectedFiles;
+  //     notifyListeners();
+  //   }
+  // }
+  void pickImages() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? selectedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+      _files.add(selectedFile!);
+      notifyListeners();
+
+  }
+
+  void removeImage(int index) {
+    files.removeAt(index);
     notifyListeners();
   }
 
@@ -75,7 +105,7 @@ class AddServiceViewModel with ChangeNotifier{
     _selectedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
     if (_selectedDate != null) {
@@ -90,8 +120,11 @@ class AddServiceViewModel with ChangeNotifier{
     if (_selectedCategory == null) {
       return 'Please Select Category';
     }
-    else if(_file == null){
+    else if(_imageFile == null){
       return 'Please Upload $selectedCategory Picture';
+    }
+    else if(_files.isEmpty){
+      return 'Please Upload Gallery Pictures';
     }
 
     else if(modelController.text.isEmpty){
@@ -130,36 +163,42 @@ class AddServiceViewModel with ChangeNotifier{
     else if(availableFromController.text.isEmpty){
       return 'Please Select Available From Date';
     }
+
     else if(availableToController.text.isEmpty){
       return 'Please Select Available To Date';
     }
-
-
-
     return null;
 
 
   }
 
   void addService(BuildContext context) async {
-
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    final name = sp.getString('name');
+    final email = sp.getString('email');
+    final image = sp.getString('profile_url');
     String? validation = validateFields();
     if(validation != null){
       Utils.flushBarMessage(validation, context, true);
       return;
     }
 
-    if (_file != null && _imageUrl.isEmpty) {
+    if (_files.isNotEmpty && _imageUrls.isEmpty) {
       print('Uploading image...');
       await uploadImage();
     }
-    if (_imageUrl.isNotEmpty) {
+    if (_imageUrls.isNotEmpty) {
       var stringPrice = priceController.text.trim();
       var price = int.tryParse(stringPrice);
       setLoading(true);
       await FirebaseFirestore.instance.collection(selectedCategory.toString().toLowerCase()).doc().set({
+        'ownerName': name,
+        'ownerEmail': email,
+        'ownerImage': image,
         'image_url': _imageUrl,
+        'image_urls': _imageUrls,
         'image_path': _imagePath,
+        'image_paths': _imagePaths,
         'category': selectedCategory.toString().toLowerCase(),
         selectedCategory == 'Home' ? 'home_type' : selectedCategory == 'Camera' ? 'camera_brand' : 'car_model': modelController.text.trim().toLowerCase(),
         selectedCategory == 'Home' ? 'bedrooms' : selectedCategory == 'Camera' ? 'camera_model' : 'car_type': typeController.text.trim(),
@@ -183,30 +222,44 @@ class AddServiceViewModel with ChangeNotifier{
     }
   }
 
-  Future<void> uploadImage() async {
-    if (_file != null) {
+  Future<void> uploadImage() async  {
+    _imageUrls.clear();
+    _imagePaths.clear();
+    setLoading(true);
+    if (_imageFile != null){
       String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
       Reference referenceRoot = FirebaseStorage.instance.ref();
       Reference referenceDirImages = referenceRoot.child('images');
       Reference imageToUpload = referenceDirImages.child(uniqueFileName);
-      try {
-        setLoading(true);
-        await imageToUpload.putFile(File(file!.path));
-        _imageUrl = await imageToUpload.getDownloadURL();
-        _imagePath = imageToUpload.fullPath;
-        print(imageToUpload.fullPath);
 
-        print('Image uploaded successfully, URL: $_imageUrl');
-        notifyListeners();
-      } catch (e) {
-        setLoading(false);
-        print('Failed to upload image: $e');
-      }
+      await imageToUpload.putFile(File(imageFile!.path));
+      _imageUrl = await imageToUpload.getDownloadURL();
+      _imagePath = imageToUpload.fullPath;
     }
+    for(var file in _files){
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+        Reference referenceRoot = FirebaseStorage.instance.ref();
+        Reference referenceDirImages = referenceRoot.child('images');
+        Reference imageToUpload = referenceDirImages.child(uniqueFileName);
+        try{
+          await imageToUpload.putFile(File(file.path));
+          String imageUrl = await imageToUpload.getDownloadURL();
+          _imageUrls.add(imageUrl);
+          _imagePaths.add(imageToUpload.fullPath);
+          print('Image uploaded: $imageUrl');
+
+        }
+            catch(e){
+              print('Failed to upload image: $e');
+            }
+    }
+    setLoading(false);
+    notifyListeners();
+
   }
 
   void clearFields(){
-    _file = null;
+    _files.clear();
     modelController.clear();
     typeController.clear();
     fuelController.clear();

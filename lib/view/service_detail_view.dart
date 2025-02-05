@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +66,9 @@ class ServiceDetailView extends StatelessWidget {
                   reviews: args['reviews'],
                   ownerId: args['ownerId'],
                   available: vm.isDateAvailable(DateTime.now()),
+                  images: args['images'],
+                  ownerImage: args['ownerImage'],
+                  ownerName: args['ownerName'],
                 ),
               ),
             ),
@@ -76,6 +81,9 @@ class ServiceDetailView extends StatelessWidget {
 
 class ServiceDetailCard extends StatelessWidget {
   final String imageUrl;
+  final String ownerImage;
+  final String ownerName;
+  final List<dynamic> images;
   final String serviceType;
   final String ownerId;
   final String type;
@@ -109,7 +117,15 @@ class ServiceDetailCard extends StatelessWidget {
     required this.availableTo,
     required this.serviceType,
     required this.rating,
-    required this.controller, required this.updateRatting, required this.focusNode, required this.submitReview, required this.loading, required this.reviews, required this.ownerId, required this.available,
+    required this.controller,
+    required this.updateRatting,
+    required this.focusNode,
+    required this.submitReview,
+    required this.loading,
+    required this.reviews,
+    required this.ownerId,
+    required this.available,
+    required this.images, required this.ownerImage, required this.ownerName,
   });
 
   @override
@@ -125,17 +141,87 @@ class ServiceDetailCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                imageUrl,
-                height: SizeConfig.scaleHeight(350),
-                width: double.infinity,
-                fit: BoxFit.cover,
+            Container(
+              height: SizeConfig.scaleHeight(200),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                    image: NetworkImage(imageUrl), fit: BoxFit.cover)
+              ),
+            ),
+            Padding(
+              padding:  EdgeInsets.only(top: SizeConfig.scaleHeight(20)),
+              child: Text(
+                'Photo Gallery:',
+                style:  mediumTextStyle.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(images.length, (index) {
+                  return  Container(
+                    margin: EdgeInsets.all(5),
+                    width: SizeConfig.scaleHeight(130),
+                    height: SizeConfig.scaleHeight(130),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: NetworkImage(images[index]), fit: BoxFit.cover),
+                      border: Border.all(color: AppColors.blackColor, width: 2),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+
+                  );
+                }),
               ),
             ),
             Padding(
               padding:  EdgeInsets.symmetric(vertical: SizeConfig.scaleHeight(10)),
+              child: Container(
+                height: SizeConfig.scaleHeight(100),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+
+                  boxShadow: normalBoxShadow
+                ),
+                child: Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: SizeConfig.scaleHeight(10)),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: SizeConfig.scaleHeight(80),
+                        width: SizeConfig.scaleHeight(80),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          image: DecorationImage(image: NetworkImage(ownerImage), fit: BoxFit.cover)
+                        ),
+                      ),
+                      SizedBox(
+                        width: SizeConfig.scaleWidth(15),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(ownerName, style: mediumTextStyle.copyWith(fontWeight: FontWeight.bold),),
+                          Text('Owner', style: smallTextStyle,)
+                        ],
+                      ),
+                      SizedBox(
+                        width: SizeConfig.scaleWidth(50),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                            text: 'Chat', onPress: (){}),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding:  EdgeInsets.only(bottom: SizeConfig.scaleHeight(10)),
               child: Text(
                 model,
                 style:  secondaryTextStyle,
