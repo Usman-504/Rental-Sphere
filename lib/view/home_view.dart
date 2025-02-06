@@ -132,7 +132,7 @@ class HomeView extends StatelessWidget {
                             'reviews' : item['reviews'],
                             'images': item['image_urls'],
                             'ownerImage': item['ownerImage'],
-                            'ownerName': item['ownerName'],
+                            'ownerName': item['ownerName'][0].toUpperCase() + item['ownerName'].substring(1),
                             'imageUrl': item['image_url'],
                             'serviceType': category,
                             'price': item['price'],

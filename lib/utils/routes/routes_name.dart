@@ -17,6 +17,8 @@ class RoutesName {
 
   static const String addService = 'add_service_screen';
 
+  static const String updateService = 'update_service_screen';
+
   static const String subServices = 'sub_services_screen';
 
   static const String detailedServices = 'detailed_services_screen';

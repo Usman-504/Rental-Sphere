@@ -64,7 +64,8 @@ class AddServiceViewModel with ChangeNotifier{
   List<String> categories = ['Car', 'Home', 'Camera'];
 
   void initializeCategory(){
-    _selectedCategory = categories.first;
+      _selectedCategory = categories.first;
+
     notifyListeners();
   }
 
@@ -216,11 +217,14 @@ class AddServiceViewModel with ChangeNotifier{
       setLoading(false);
       Navigator.pop(context);
      Utils.flushBarMessage('$selectedCategory Service Added Successfully', context, false);
+     clearFields();
       print('Data saved successfully!');
     } else {
       print('Image URL is empty, not saving data.');
     }
   }
+
+
 
   Future<void> uploadImage() async  {
     _imageUrls.clear();

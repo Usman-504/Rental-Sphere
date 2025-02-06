@@ -17,7 +17,7 @@ class AddServiceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_)=>AddServiceViewModel(),
+      create: (_)=>AddServiceViewModel()..initializeCategory(),
       child: Consumer<AddServiceViewModel>(
         builder: (context, vm, child) {
           return Scaffold(

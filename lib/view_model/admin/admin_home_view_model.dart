@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../res/components/navigation_helper.dart';
 import '../../utils/routes/routes_name.dart';
+import '../../utils/utils.dart';
 
 class AdminHomeViewModel with ChangeNotifier{
 
@@ -59,6 +61,16 @@ class AdminHomeViewModel with ChangeNotifier{
   void onChanged(value){
     searchController.text = value.trim();
     notifyListeners();
+  }
+
+  void deleteService(String category, String docId, String path, List<dynamic> paths, BuildContext context) async {
+    await FirebaseStorage.instance.ref(path).delete();
+    for (String imagePath in paths) {
+      await FirebaseStorage.instance.ref(imagePath).delete();
+    }
+    await FirebaseFirestore.instance.collection(category).doc(docId).delete();
+    var value = category == 'car' ? 'Car' : category == 'home' ? 'Home' : 'Camera';
+    Utils.flushBarMessage('$value Service Deleted Successfully', context, false);
   }
 
   void logout(BuildContext context) {

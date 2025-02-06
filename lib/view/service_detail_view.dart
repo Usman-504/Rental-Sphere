@@ -150,13 +150,13 @@ class ServiceDetailCard extends StatelessWidget {
                     image: NetworkImage(imageUrl), fit: BoxFit.cover)
               ),
             ),
-            Padding(
+           images.isNotEmpty ? Padding(
               padding:  EdgeInsets.only(top: SizeConfig.scaleHeight(20)),
               child: Text(
                 'Photo Gallery:',
                 style:  mediumTextStyle.copyWith(fontWeight: FontWeight.bold),
               ),
-            ),
+            ) : SizedBox.shrink(),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(

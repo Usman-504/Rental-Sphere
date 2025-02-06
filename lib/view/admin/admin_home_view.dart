@@ -127,14 +127,64 @@ class AdminHomeView extends StatelessWidget {
                         Positioned(
                           top: SizeConfig.scaleHeight(15),
                             left: SizeConfig.scaleHeight(10),
-                            child: Container(
-                                height: SizeConfig.scaleHeight(40),
-                                width: SizeConfig.scaleHeight(40),
-                                decoration: BoxDecoration(
-                                  color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(5)
-                                ),
-                                child: Icon(Icons.edit, color: AppColors.blackColor,))
+                            child: InkWell(
+                              onTap: (){
+                                NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.updateService, arguments: {
+                                  'category' : item['category'],
+                                  'image_url' : item['image_url'],
+                                  'images' : item['image_urls'],
+                                  'imagePaths' : item['image_paths'],
+                                  'docId' : item.id,
+                                  'model': item['category'] ==
+                                      'home'
+                                      ? item['home_type'][0].toUpperCase() + item['home_type'].substring(1)
+                                      : item['category'] ==
+                                      'camera'
+                                      ? item['camera_brand'][0].toUpperCase() + item['camera_brand'].substring(1)
+                                      : item['car_model'][0].toUpperCase() + item['car_model'].substring(1),
+                                  'type': item['category'] ==
+                                      'camera'
+                                      ? item['camera_model']
+                                      : item['category'] ==
+                                      'car'
+                                      ? item['car_type']
+                                      : item['bedrooms'],
+                                  'fuelType': item['category'] ==
+                                      'home'
+                                      ? item['bathrooms']
+                                      : item['category'] ==
+                                      'camera'
+                                      ? item['lens_type']
+                                      : item['fuel_type'],
+                                  'transmission': item['category'] ==
+                                      'home'
+                                      ? item['furnished']
+                                      : item['category'] ==
+                                      'camera'
+                                      ? item['sensor_type']
+                                      : item['transmission'],
+                                  'year': item['category'] ==
+                                      'home'
+                                      ? item['size']
+                                      : item['category'] ==
+                                      'camera'
+                                      ? item['resolution']
+                                      : item['year'],
+                                  'price': item['price'],
+                                  'location': item['location'],
+                                  'availableFrom': item['availableFrom'],
+                                  'availableTo': item['availableTo'],
+                                });
+                              },
+                              child: Container(
+                                  height: SizeConfig.scaleHeight(40),
+                                  width: SizeConfig.scaleHeight(40),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.whiteColor,
+                                    borderRadius: BorderRadius.circular(5)
+                                  ),
+                                  child: Icon(Icons.edit, color: AppColors.blackColor,)),
+                            )
                         ),
                         Positioned(
                           top: SizeConfig.scaleHeight(15),
@@ -146,7 +196,18 @@ class AdminHomeView extends StatelessWidget {
                                     color: AppColors.whiteColor,
                                     borderRadius: BorderRadius.circular(5)
                                 ),
-                                child: Icon(Icons.delete, color: AppColors.blackColor,))),
+                                child: InkWell(
+                                    onTap: (){
+                                      final vm = Provider.of<AdminHomeViewModel>(context, listen: false);
+                                      vm.deleteService(
+                                        item['category'],
+                                        item.id,
+                                        item['image_path'],
+                                        item['image_paths'],
+                                        context
+                                      );
+                                    },
+                                    child: Icon(Icons.delete, color: AppColors.blackColor,)))),
                         Positioned(
                           bottom: SizeConfig.scaleHeight(15),
                           child: Container(
