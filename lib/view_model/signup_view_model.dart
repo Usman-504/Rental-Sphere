@@ -17,6 +17,8 @@ class SignupViewModel with ChangeNotifier{
 
   final ValueNotifier<bool> obscurePassword = ValueNotifier<bool>(true);
 
+  String _selectedRole = 'Admin';
+  String get selectedRole => _selectedRole;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -28,15 +30,18 @@ class SignupViewModel with ChangeNotifier{
 
   String? validateFields() {
     if (nameController.text.isEmpty) {
-      return 'Please Enter Your Email';
+      return 'Please Enter Your Name';
     }
    else  if (emailController.text.isEmpty) {
       return 'Please Enter Your Email';
-    } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(emailController.text)) {
+    }
+   else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(emailController.text)) {
       return 'Please Enter a Valid Email Address';
-    } else if (passwordController.text.isEmpty) {
+    }
+   else if (passwordController.text.isEmpty) {
       return 'Please Enter Your Password';
-    } else if (passwordController.text.length < 6) {
+    }
+   else if (passwordController.text.length < 6) {
       return 'Password must be at least 6 characters';
     }
     return null;
@@ -48,7 +53,7 @@ class SignupViewModel with ChangeNotifier{
     passwordController.clear();
   }
 
-  Future<void> signUp(BuildContext context) async {
+  Future<void> signUp(BuildContext context, bool role) async {
 
     String? validation = validateFields();
     if (validation != null) {
@@ -66,14 +71,17 @@ class SignupViewModel with ChangeNotifier{
             .set({
           'name': nameController.text.trim(),
           'email': FirebaseAuth.instance.currentUser!.email,
-          'role': 'client',
+          'role': role == true ? _selectedRole.toLowerCase() : 'client',
           'user_id': FirebaseAuth.instance.currentUser!.uid,
           'image_url': 'https://firebasestorage.googleapis.com/v0/b/password-manager-46797.appspot.com/o/profile%2FuserImg.png?alt=media&token=65a32fed-43e2-45dc-b73d-721e62fcffa8',
           'image_path': 'profile/userImg.png',
         });
         setLoading(false);
+        if(role == true){
+          Navigator.pop(context);
+        }else{
         NavigationHelper.navigateWithSlideTransition(
-            context: context, routeName: RoutesName.login, replace: true);
+            context: context, routeName: RoutesName.login, replace: true);}
         Utils.flushBarMessage('Account Created Successfully', context, false);
         clearFields();
         notifyListeners();
@@ -98,6 +106,13 @@ class SignupViewModel with ChangeNotifier{
         return ;
       }
     }
+  }
+
+  List<String> roles = ['Admin', 'Client'];
+
+  void dropDownRole (String? selectedRole){
+    _selectedRole = selectedRole!;
+    notifyListeners();
   }
 
 

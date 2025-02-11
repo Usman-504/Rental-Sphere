@@ -154,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                                                 letterSpacing: 0),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
-                                                NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, replace: true);
+                                                NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, replace: true, arguments: false);
                                               },
                                           ),
                                         ],

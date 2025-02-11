@@ -4,12 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/view_model/admin/add_service_view_model.dart';
-
 import '../../utils/styles.dart';
 
 class CustomDropDown extends StatefulWidget {
+  final bool isRole;
+  final List<String>? items;
+  final String? hintText;
+  final Function(String?)? onChange;
   const CustomDropDown({
-    super.key,
+    super.key, this.items, this.onChange, this.hintText,
+    this.isRole = false
 
 
   });
@@ -65,7 +69,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
       dropdownDecoratorProps: DropDownDecoratorProps(
         baseStyle: mediumTextStyle.copyWith(color: AppColors.blackColor),
         dropdownSearchDecoration: InputDecoration(
-          hintText: 'Select Category',
+          hintText: widget.isRole == true ? widget.hintText : 'Select Category',
           filled: true,
           fillColor:  AppColors.whiteColor,
           contentPadding: const EdgeInsets.only(left: 10, top: 15),
@@ -88,9 +92,9 @@ class _CustomDropDownState extends State<CustomDropDown> {
           color: AppColors.blackColor,
         ),
       ),
-      items: vm.categories,
-      onChanged: vm.dropDownCategory,
-      selectedItem: vm.selectedCategory,
+      items: widget.isRole == true ? widget.items! : vm.categories,
+      onChanged:widget.isRole == true ? widget.onChange : vm.dropDownCategory,
+      selectedItem: widget.isRole == true ? widget.items!.first : vm.selectedCategory,
 
     ),
   );

@@ -6,6 +6,7 @@ import 'package:rental_sphere/res/components/navigation_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/routes/routes_name.dart';
+import '../../utils/utils.dart';
 
 class SplashServices {
   void checkUserRoleAndNavigate(BuildContext context) async {
@@ -18,12 +19,14 @@ class SplashServices {
 
       if (role == 'admin') {
         NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.adminNavBar, replace: true);
+        Utils.flushBarMessage('Account Login Successfully', context, false);
       }
       else if (role == 'client'){
         NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.navBar, replace:  true);
+        Utils.flushBarMessage('Account Login Successfully', context, false);
       }
     } else {
-      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, replace: true);
+      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, replace: true, arguments: false);
     }
   }
 
@@ -38,7 +41,7 @@ class SplashServices {
       NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.navBar, replace: true);
     }
     else {
-      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, replace: true);
+      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, replace: true, arguments: false);
     }
   }
 

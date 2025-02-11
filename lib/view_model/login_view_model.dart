@@ -56,30 +56,39 @@ class LoginViewModel with ChangeNotifier{
       setLoading(true);
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
-          password: passwordController.text.trim());
-      User? user = FirebaseAuth.instance.currentUser;
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user!.uid)
-          .get();
+          password: passwordController.text.trim()).then((value) async{
+        User? user = FirebaseAuth.instance.currentUser;
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'email': FirebaseAuth.instance.currentUser!.email,
+        });
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .get();
 
-      String role = userDoc.get('role');
-      String name = userDoc.get('name');
-      String email = userDoc.get('email');
-      String photo = userDoc.get('image_url');
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      sp.setString('role', role);
-      sp.setString('name', name);
-      sp.setString('email', email);
-      sp.setString('profile_url', photo);
-      print(sp.getString('role'));
-      setLoading(false);
-      SplashServices splashServices = SplashServices();
-      splashServices.checkUserRoleAndNavigate(context);
-      Utils.flushBarMessage('Account Login Successfully', context, false);
-      clearFields();
-      notifyListeners();
-      return;
+        String role = userDoc.get('role');
+        String name = userDoc.get('name');
+        String email = userDoc.get('email');
+        String photo = userDoc.get('image_url');
+        SharedPreferences sp = await SharedPreferences.getInstance();
+        sp.setString('role', role);
+        sp.setString('name', name);
+        sp.setString('email', email);
+        sp.setString('profile_url', photo);
+        print(sp.getString('role'));
+        setLoading(false);
+        SplashServices splashServices = SplashServices();
+        splashServices.checkUserRoleAndNavigate(context);
+
+        clearFields();
+        notifyListeners();
+        // return;
+      });
+
+
     } on FirebaseException catch (e) {
       setLoading(false);
       if (e.code == 'invalid-email') {

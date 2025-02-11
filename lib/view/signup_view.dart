@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/custom_button.dart';
+import 'package:rental_sphere/res/components/custom_dropdown.dart';
 import 'package:rental_sphere/res/components/custom_textfield.dart';
 import 'package:rental_sphere/utils/assets.dart';
 import 'package:rental_sphere/utils/size_config.dart';
@@ -13,7 +14,8 @@ import '../res/components/navigation_helper.dart';
 import '../utils/routes/routes_name.dart';
 
 class SignUpView extends StatefulWidget {
-  const SignUpView({super.key});
+  final bool isRole;
+  const SignUpView({super.key, this.isRole = false});
 
   @override
   State<SignUpView> createState() => _SignUpViewState();
@@ -124,7 +126,7 @@ class _SignUpViewState extends State<SignUpView> {
                                   valueListenable: viewModel.obscurePassword,
                                   builder: (context, vm, child) {
                                     return CustomTextField(
-                                      bottom: 50,
+                                      bottom: widget.isRole ? 20 :50,
                                       isPassword: true,
                                       obscurePassword: viewModel.obscurePassword,
                                       focusNode: viewModel.passwordFocusNode,
@@ -136,11 +138,26 @@ class _SignUpViewState extends State<SignUpView> {
                                     );
                                   },
                                 ),
-
+                               if(widget.isRole)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Role*', style: mediumTextStyle),
+                                    Padding(
+                                      padding:  EdgeInsets.only(bottom: SizeConfig.scaleHeight(20)),
+                                      child: CustomDropDown(
+                                        isRole: true,
+                                        hintText: 'Select Role',
+                                        items: viewModel.roles,
+                                        onChange: viewModel.dropDownRole,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 CustomButton(
                                   loading: viewModel.loading,
                                   text: 'Sign Up',
-                                  onPress: () => viewModel.signUp(context),
+                                  onPress: () => viewModel.signUp(context, widget.isRole),
                                 ),
                                 Center(
                                   child: Padding(

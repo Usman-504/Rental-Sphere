@@ -5,7 +5,7 @@ class NavigationHelper {
   static Future<void> navigateWithSlideTransition({
     required BuildContext context,
     required String routeName,
-    Object? arguments,
+    dynamic arguments,
     Offset beginOffset = const Offset(1.0, 0.0),
     Curve curve = Curves.easeInOut,
     bool clearStack = false,
