@@ -77,13 +77,6 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Center(
-                  child: ElevatedButton(
-
-                      onPressed: (){
-                    vm.logout(context);
-                  }, child: Text('Logout')),
-                ),
               ],
             ),
           );

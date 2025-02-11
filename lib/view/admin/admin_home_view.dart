@@ -50,9 +50,6 @@ class AdminHomeView extends StatelessWidget {
                           _buildServiceList(vm.getHomeServices(), 'No Home Service Found', 'Home'),
                           Text('Cameras:', style: secondaryTextStyle),
                           _buildServiceList(vm.getCameraServices(), 'No Camera Service Found', "Camera"),
-                         ElevatedButton(onPressed: (){
-                           vm.logout(context);
-                         }, child: Text('Logout'))
                         ],
                       ),
                     ),

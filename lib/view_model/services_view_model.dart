@@ -363,13 +363,6 @@ class ServicesViewModel with ChangeNotifier{
   }
 
 
-  void logout(BuildContext context) {
-    FirebaseAuth.instance.signOut().then((value) async {
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      sp.setString('role', '');
-      NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.login);
-    });
-  }
 
 
 }
