@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -219,7 +220,12 @@ class ServiceDetailCard extends StatelessWidget {
                       ),
                       Expanded(
                         child: CustomButton(
-                            text: 'Chat', onPress: (){}),
+                            text: 'Chat', onPress: (){
+                              NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.specificChat, arguments: {
+                                'senderId' : FirebaseAuth.instance.currentUser!.uid,
+                                'receiverId' : ownerId,
+                              });
+                        }),
                       ),
                     ],
                   ),

@@ -81,14 +81,6 @@ class AddServiceViewModel with ChangeNotifier{
     notifyListeners();
   }
 
-  // void pickImages() async {
-  //   ImagePicker imagePicker = ImagePicker();
-  //   List<XFile>? selectedFiles = await imagePicker.pickMultiImage();
-  //   if (selectedFiles.isNotEmpty) {
-  //     _files = selectedFiles;
-  //     notifyListeners();
-  //   }
-  // }
   void pickImages() async {
     ImagePicker imagePicker = ImagePicker();
     XFile? selectedFile = await imagePicker.pickImage(source: ImageSource.gallery);

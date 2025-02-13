@@ -273,54 +273,7 @@ class ServicesViewModel with ChangeNotifier{
     }
     notifyListeners();
   }
-  // void filterSubServices(String query) {
-  //
-  //   searchSubQuery = query.toLowerCase();
-  //  if (searchSubQuery.isEmpty) {
-  //    filteredCarServices = List.from(cars);
-  //    filteredHomeServices = List.from(homes);
-  //    filteredCameraServices = List.from(cameras);
-  //   }
-  //   else {
-  //
-  //    filteredCarServices = cars.where((car) {
-  //      final carType = car['type'].toString().toLowerCase().trim();
-  //      final model = car['model'].toString().toLowerCase().trim();
-  //      final price = car['pricePerDay'].toString().toLowerCase().trim();
-  //      final location = car['location'].toString().toLowerCase().trim();
-  //
-  //      return carType.contains(searchSubQuery) ||
-  //          model.contains(searchSubQuery) ||
-  //          price.contains(searchSubQuery) ||
-  //          location.contains(searchSubQuery);
-  //    }).toList();
-  //    filteredHomeServices = homes.where((home) {
-  //      final homeType = home['type'].toString().toLowerCase().trim();
-  //      final location = home['location'].toString().toLowerCase().trim();
-  //      final bedRooms = home['bedrooms'].toString().toLowerCase().trim();
-  //      final price = home['pricePerDay'].toString().toLowerCase().trim();
-  //
-  //      return homeType.contains(searchSubQuery) ||
-  //          location.contains(searchSubQuery)  ||
-  //          bedRooms.contains(searchSubQuery)  ||
-  //          price.contains(searchSubQuery);
-  //    }).toList();
-  //    filteredCameraServices = cameras.where((camera) {
-  //      final cameraType = camera['brand'].toString().toLowerCase().trim();
-  //      final location = camera['location'].toString().toLowerCase().trim();
-  //      final price = camera['pricePerDay'].toString().toLowerCase().trim();
-  //      final model = camera['model'].toString().toLowerCase().trim();
-  //
-  //      return cameraType.contains(searchSubQuery) ||
-  //          location.contains(searchSubQuery) ||
-  //          price.contains(searchSubQuery) ||
-  //          model.contains(searchSubQuery);
-  //    }).toList();
-  //
-  //   }
-  //
-  //   notifyListeners();
-  // }
+
 
   Stream<QuerySnapshot> getCarServices() {
     String searchQuery = searchSubController.text.trim().toLowerCase();

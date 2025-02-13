@@ -14,6 +14,7 @@ import 'package:rental_sphere/view/login_view.dart';
 import 'package:rental_sphere/view/service_detail_view.dart';
 import 'package:rental_sphere/view/services_view.dart';
 import 'package:rental_sphere/view/signup_view.dart';
+import 'package:rental_sphere/view/specific_chat_view.dart';
 import 'package:rental_sphere/view/sub_services_view.dart';
 import 'package:rental_sphere/view/update_profile_view.dart';
 
@@ -64,6 +65,9 @@ class Routes {
         return MaterialPageRoute(builder: (_)=> BookingDetailView(args: args,));
       case RoutesName.aboutUs:
         return MaterialPageRoute(builder: (_)=>const AboutUsView());
+      case RoutesName.specificChat:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(builder: (_)=> SpecificChatView(args: args,));
       default:
         return MaterialPageRoute(builder: (_){
           return const  Scaffold(

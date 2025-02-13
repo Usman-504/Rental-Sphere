@@ -33,4 +33,6 @@ class RoutesName {
 
   static const String aboutUs = 'about_us_screen';
 
+  static const String specificChat = 'specific_chat_screen';
+
 }
