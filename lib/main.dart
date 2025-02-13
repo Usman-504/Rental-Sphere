@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'package:provider/provider.dart';
+import 'package:rental_sphere/res/app_urls.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/utils/routes/routes.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
 import 'package:rental_sphere/view_model/admin/add_service_view_model.dart';
+import 'package:rental_sphere/view_model/all_bookings_view_model.dart';
 import 'package:rental_sphere/view_model/profile_view_model.dart';
 import 'package:rental_sphere/view_model/services_view_model.dart';
 
@@ -16,6 +19,8 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  Stripe.publishableKey = AppUrls.stripePublishableKey;
+  await Stripe.instance.applySettings();
   runApp(const MyApp());
 }
 
@@ -29,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create:(_)=>ServicesViewModel()),
         ChangeNotifierProvider(create:(_)=>AddServiceViewModel()),
         ChangeNotifierProvider(create:(_)=>ProfileViewModel()),
+        ChangeNotifierProvider(create:(_)=>AllBookingViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

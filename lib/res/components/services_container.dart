@@ -9,9 +9,11 @@ class ServiceContainer extends StatelessWidget {
   final String title;
   final String subTitle;
   final bool? subService;
+  final bool booking;
   // final String? type;
   // final String? model;
   final String? location;
+  final String? status;
   final double? rating;
   final String? price;
   const ServiceContainer({
@@ -20,6 +22,8 @@ class ServiceContainer extends StatelessWidget {
     required this.title,
     required this.subTitle,
     this.subService,
+    this.status,
+    this.booking = false,
     // this.type,
     // this.model,
     this.location,
@@ -124,7 +128,7 @@ class ServiceContainer extends StatelessWidget {
                                     fontWeight: FontWeight.w500),
                               )
                             : SizedBox.shrink(),
-                        subService == true
+                        subService == true && rating  != null
                             ?  Row(
                           children: [
                             Text(
@@ -136,8 +140,16 @@ class ServiceContainer extends StatelessWidget {
                             Icon(Icons.star, color: Colors.amber, size: 20,)
                           ],
                         )
-
                             : SizedBox.shrink(),
+                        if(booking)
+                          Text(
+                            status!,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: smallTextStyle.copyWith(
+                                color: AppColors.whiteColor,
+                                fontWeight: FontWeight.w500),
+                          )
                       ],
                     ),
                   ),

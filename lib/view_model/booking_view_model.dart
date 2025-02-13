@@ -39,9 +39,6 @@ void setAvailableDates(DateTime startDate, DateTime endDate) {
  notifyListeners();
 }
 
-
-
-
 bool isDateAvailable(DateTime selectedDate) {
  if (availableStartDate == null || availableEndDate == null) {
   return true;
@@ -94,7 +91,6 @@ void selectTime(BuildContext context, TextEditingController controller) async {
  }
  notifyListeners();
 }
-
 
 void calculateDuration() {
  if (pickUpDateController.text.isNotEmpty &&

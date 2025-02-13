@@ -56,6 +56,7 @@ setLoading(true);
           .doc(docId)
           .get();
       String userName = userDoc.get('name');
+      String userRole = userDoc.get('role');
 
       final userDocSnapshot = await FirebaseFirestore.instance.collection('users')
           .where('email', isEqualTo: email)
@@ -89,6 +90,12 @@ setLoading(true);
         sp.setString('name', name);
         sp.setString('email', email);
         String? role = sp.getString('role');
+        if (userRole == 'admin') {
+          await updateAdminOwnerName(user.uid, name);
+        } else if (userRole == 'client') {
+          await updateClientReviewName(user.uid, name);
+        }
+
         setLoading(false);
         if(role == 'client'){
           NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.navBar, replace: true);
@@ -131,6 +138,7 @@ setLoading(true);
         .get();
 
     String oldImagePath = document.get('image_path');
+    String userRole = document.get('role');
 
 
     if (_file != null) {
@@ -149,6 +157,14 @@ setLoading(true);
           'image_url': _imageUrl,
           'image_path': _imagePath,
         });
+        if (userRole == 'admin') {
+          User? user = FirebaseAuth.instance.currentUser;
+          await updateAdminOwnerImage(user!.uid);
+        }
+        else if (userRole == 'client') {
+          User? user = FirebaseAuth.instance.currentUser;
+          await updateClientReviewImage(user!.uid);
+        }
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('profile_url', _imageUrl);
         String? role = sp.getString('role');
@@ -168,6 +184,108 @@ setLoading(true);
       }
     }
   }
+  Future<void> updateAdminOwnerName(String ownerId, String newName) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    List<String> collections = ['car', 'home', 'camera'];
+
+    for (String collection in collections) {
+      QuerySnapshot querySnapshot = await firestore
+          .collection(collection)
+          .where('userId', isEqualTo: ownerId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await firestore.collection(collection).doc(doc.id).update({
+          'ownerName': newName,
+        });
+      }
+    }
+  }
+
+  Future<void> updateClientReviewName(String userId, String newName) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    List<String> collections = ['car', 'home', 'camera'];
+
+    for (String collection in collections) {
+      QuerySnapshot querySnapshot = await firestore.collection(collection).get();
+
+      for (var doc in querySnapshot.docs) {
+        List<dynamic> reviews = doc.get('reviews');
+
+        bool hasReview = reviews.any((review) => review['user_id'] == userId);
+
+        if (hasReview) {
+          List<dynamic> updatedReviews = reviews.map((review) {
+            if (review['user_id'] == userId) {
+              return {
+                ...review,
+                'name': newName,
+              };
+            }
+            return review;
+          }).toList();
+
+          await firestore.collection(collection).doc(doc.id).update({
+            'reviews': updatedReviews,
+          });
+        }
+      }
+    }
+  }
+
+
+
+  Future<void> updateAdminOwnerImage(String ownerId) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    List<String> collections = ['car', 'home', 'camera'];
+
+    for (String collection in collections) {
+      QuerySnapshot querySnapshot = await firestore
+          .collection(collection)
+          .where('userId', isEqualTo: ownerId)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await firestore.collection(collection).doc(doc.id).update({
+          'ownerImage': _imageUrl,
+        });
+      }
+    }
+  }
+
+  Future<void> updateClientReviewImage(String userId) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    List<String> collections = ['car', 'home', 'camera'];
+
+    for (String collection in collections) {
+      QuerySnapshot querySnapshot = await firestore.collection(collection).get();
+
+      for (var doc in querySnapshot.docs) {
+        List<dynamic> reviews = doc.get('reviews');
+
+        bool hasReview = reviews.any((review) => review['user_id'] == userId);
+
+        if (hasReview) {
+          List<dynamic> updatedReviews = reviews.map((review) {
+            if (review['user_id'] == userId) {
+              return {
+                ...review,
+                'image': _imageUrl,
+              };
+            }
+            return review;
+          }).toList();
+
+          await firestore.collection(collection).doc(doc.id).update({
+            'reviews': updatedReviews,
+          });
+        }
+      }
+    }
+  }
+
+
 
   void pickImage() async {
     ImagePicker imagePicker = ImagePicker();

@@ -156,5 +156,11 @@ class ServiceDetailViewModel  with ChangeNotifier{
     }
   }
 
+  String getFormattedName(String fullName) {
+    List<String> nameParts = fullName.split(' ');
+    String firstName = nameParts.first;
+    return firstName.length > 8 ? firstName.substring(0, 8) : firstName;
+  }
+
 
 }

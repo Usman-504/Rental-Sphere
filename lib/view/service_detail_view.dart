@@ -130,6 +130,12 @@ class ServiceDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String getFormattedName(String fullName) {
+      List<String> nameParts = fullName.split(' '); 
+      String firstName = nameParts.first; 
+      return firstName.length > 8 ? firstName.substring(0, 8) : firstName;
+    }
+    
     final vm = Provider.of<ServiceDetailViewModel>(context, listen: false);
     return Card(
       color: AppColors.whiteColor,
@@ -229,7 +235,7 @@ class ServiceDetailCard extends StatelessWidget {
             ),
             ServiceDetailText(label: serviceType == 'Home' ? 'Bedrooms' : serviceType == 'Camera' ? 'Model' : 'Type', value: type),
             ServiceDetailText(label: serviceType == 'Home' ? 'Bathrooms' :serviceType == 'Camera' ? 'Lens Type' : 'Fuel', value: fuelType),
-            ServiceDetailText(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Year', value: year),
+            ServiceDetailText(label: serviceType == 'Home' ? 'Size' :serviceType == 'Camera' ? 'Sensor Type' : 'Year', value: serviceType == 'Home' ? '$year (Sqft)' : year),
             ServiceDetailText(label: serviceType == 'Home' ? 'Furnished' :serviceType == 'Camera' ? 'Resolution' :'Transmission', value: transmission),
             ServiceDetailText(label: 'Availability', value: '$availableFrom - $availableTo'),
             ServiceDetailText(label: 'Location', value: location),
@@ -368,7 +374,7 @@ class ServiceDetailCard extends StatelessWidget {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(reviews[index]['name'].toString()[0].toUpperCase() + reviews[index]['name'].toString().substring(1), style: mediumTextStyle,),
+                                          Text(getFormattedName(reviews[index]['name'].toString()), style: mediumTextStyle,),
                                           Text(vm.formatedDate(reviews[index]['date']), style: smallTextStyle,),
                         
                                         ],

@@ -50,6 +50,7 @@ dependencies:
   firebase_storage: ^12.4.1
   another_carousel_pro: ^1.0.2
   url_launcher: ^6.3.1
+  flutter_stripe: ^11.4.0
 
 dev_dependencies:
   flutter_test:

@@ -1,15 +1,7 @@
 class AppUrls {
-  static var baseUrl = 'https://reqres.in';
 
-  static var moviesBaseUrl = 'https://dea91516-1da3-444b-ad94-c6d0c4dfab81.mock.pstmn.io/';
+  static var stripePublishableKey = 'pk_test_51QrYsdBTaAckQqtcnvHkOHFBewEz6PXStm6mgv8hkVldENWOP6pTgROxabvVczG2dVKj1orMsJK0zxIfY3Ew2R9V00XS36DuZI';
+  static var stripeSecretKey = 'sk_test_51QrYsdBTaAckQqtcNhjXICyyh0X4WhI76JxTenmZNy09e0gDTDdelmDEKcKh7po32n2eayqOp9Ld5TceyhFCzEXK006HmjemMa';
 
-  static var loginEndPoint = '$baseUrl/api/login';
 
-  static var registerEndPoint = '$baseUrl/api/register';
-
-  static var moviesListEndPoint = '${moviesBaseUrl}movies_list';
-
-  static var weatherEndPoint = 'https://api.openweathermap.org/data/2.5/weather?lat=34.149433&lon=71.742783&appid=b03d5339fc7672eb5ebbfcc7afb0767f';
-
-  static var postsEndpoint = 'https://jsonplaceholder.typicode.com/posts';
 }

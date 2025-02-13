@@ -78,6 +78,10 @@ class BookingView extends StatelessWidget {
                     year: args['year'],
                     bookNow: () {
                       vm.bookNow(context, {
+                        'isBooking' : false,
+                        'role' : '',
+                        'status' : '',
+                        'reason' : '',
                         'serviceType' : args['serviceType'],
                         'model' : args['model'],
                         'type' : args['type'],
