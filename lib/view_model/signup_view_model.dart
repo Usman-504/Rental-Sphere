@@ -75,6 +75,8 @@ class SignupViewModel with ChangeNotifier{
           'user_id': FirebaseAuth.instance.currentUser!.uid,
           'image_url': 'https://firebasestorage.googleapis.com/v0/b/password-manager-46797.appspot.com/o/profile%2FuserImg.png?alt=media&token=65a32fed-43e2-45dc-b73d-721e62fcffa8',
           'image_path': 'profile/userImg.png',
+          'status': 'Online',
+          'lastSeen': FieldValue.serverTimestamp(),
         });
         setLoading(false);
         if(role == true){

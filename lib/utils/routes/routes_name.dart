@@ -35,4 +35,6 @@ class RoutesName {
 
   static const String specificChat = 'specific_chat_screen';
 
+  static const String fullImage = 'full_image_screen';
+
 }

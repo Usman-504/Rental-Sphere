@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/custom_textfield.dart';
+import 'package:rental_sphere/res/components/navigation_helper.dart';
+import 'package:rental_sphere/utils/routes/routes_name.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/utils/styles.dart';
 import 'package:rental_sphere/view_model/specific_chat_view_model.dart';
@@ -16,13 +18,10 @@ class SpecificChatView extends StatefulWidget {
 }
 
 class _SpecificChatViewState extends State<SpecificChatView> {
-
   late String senderId;
   late String receiverId;
   late String name;
   late String image;
-
-
 
   @override
   void initState() {
@@ -35,9 +34,9 @@ class _SpecificChatViewState extends State<SpecificChatView> {
 
   @override
   Widget build(BuildContext context) {
-    String chatId = senderId.compareTo(receiverId) < 0
-        ? '${senderId}_$receiverId'
-        : '${receiverId}_$senderId';
+    String chatId = senderId.hashCode <= receiverId.hashCode
+        ? "${senderId}_$receiverId"
+        : "${receiverId}_$senderId";
     return ChangeNotifierProvider(
       create: (_) => SpecificChatViewModel(),
       child: Consumer<SpecificChatViewModel>(
@@ -47,19 +46,22 @@ class _SpecificChatViewState extends State<SpecificChatView> {
             appBar: AppBar(
               leading: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: Icon(Icons.arrow_back, size: 30, color: AppColors.whiteColor),
+                child: Icon(Icons.arrow_back,
+                    size: 30, color: AppColors.whiteColor),
               ),
               backgroundColor: AppColors.blackColor,
-              title:Row(
+              title: Row(
                 children: [
                   CircleAvatar(
+                    backgroundColor: AppColors.blackColor,
                     backgroundImage: NetworkImage(image),
                     radius: 18,
                   ),
                   SizedBox(width: 10),
                   Text(
                     name,
-                    style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),
+                    style: secondaryTextStyle.copyWith(
+                        color: AppColors.whiteColor),
                   ),
                 ],
               ),
@@ -71,11 +73,11 @@ class _SpecificChatViewState extends State<SpecificChatView> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: vm.getSpecificChat(chatId),
                     builder: (context, snapshot) {
-                      if(snapshot.connectionState == ConnectionState.waiting){
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
-                      if(snapshot.hasError){
-                       return Text('Error Occurred');
+                      if (snapshot.hasError) {
+                        return Text('Error Occurred');
                       }
                       if (!snapshot.hasData) {
                         return Text('No Message Sent Yet');
@@ -88,27 +90,70 @@ class _SpecificChatViewState extends State<SpecificChatView> {
                       });
                       return ListView.builder(
                         controller: vm.scrollController,
-                        itemCount: messages.length,
+                        itemCount: messages.length + (vm.loading ? 1 : 0),
                         itemBuilder: (context, index) {
+                          if (index == messages.length && vm.loading) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    width: SizeConfig.scaleHeight(200),
+                                    height: SizeConfig.scaleHeight(200),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.blackColor,
+                                      ),
+                                    ),
+                                  )),
+                            );
+                          }
                           var message = messages[index];
                           bool isMe = message['senderId'] == senderId;
                           return Align(
-                            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                            alignment: isMe
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
                             child: Container(
-                              margin: EdgeInsets.symmetric(vertical: SizeConfig.scaleHeight(5), horizontal: SizeConfig.scaleWidth(10)),
-                              padding: EdgeInsets.all(SizeConfig.scaleHeight(10)),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: SizeConfig.scaleHeight(5),
+                                  horizontal: SizeConfig.scaleWidth(10)),
+                              padding: message['image_url'] != null
+                                  ? EdgeInsets.all(SizeConfig.scaleHeight(5))
+                                  : EdgeInsets.all(SizeConfig.scaleHeight(10)),
                               decoration: BoxDecoration(
-                                color: isMe ? AppColors.blueColor.shade300 : AppColors.greyColor.shade300,
-                                borderRadius: BorderRadius.circular(10),
+                                color: isMe
+                                    ? AppColors.blueColor.shade300
+                                    : AppColors.greyColor,
+                                borderRadius: BorderRadius.circular(5),
                               ),
                               child: Container(
                                 constraints: BoxConstraints(
-                                  maxWidth: SizeConfig.screenWidth * 0.8
+                                  maxWidth: SizeConfig.screenWidth * 0.8,
                                 ),
-                                child: Text(
-                                  message['text'],
-                                  style: smallTextStyle.copyWith(fontSize: 13),
-                                ),
+                                child: message['image_url'] != null
+                                    ? InkWell(
+                                  onTap: (){
+                                    NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.fullImage, arguments: {
+                                      'image' : message['image_url']
+                                    });
+                                  },
+                                        child: Image.network(
+                                          width: SizeConfig.scaleHeight(200),
+                                          height: SizeConfig.scaleHeight(200),
+                                          message['image_url'],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Text(
+                                        message['text'],
+                                        style: smallTextStyle.copyWith(
+                                          fontSize: 13,
+                                          color: isMe
+                                              ? AppColors.blackColor
+                                              : AppColors.whiteColor,
+                                        ),
+                                      ),
                               ),
                             ),
                           );
@@ -123,8 +168,11 @@ class _SpecificChatViewState extends State<SpecificChatView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.image, size: 30, color: AppColors.blackColor),
-                        onPressed: () {},
+                        icon: Icon(Icons.image,
+                            size: 30, color: AppColors.blackColor),
+                        onPressed: () {
+                          vm.pickImage(senderId, receiverId, context);
+                        },
                       ),
                       Expanded(
                         child: CustomTextField(
@@ -139,7 +187,8 @@ class _SpecificChatViewState extends State<SpecificChatView> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.send, size: 30, color: AppColors.blackColor),
+                        icon: Icon(Icons.send,
+                            size: 30, color: AppColors.blackColor),
                         onPressed: () async {
                           vm.sendMessage(senderId, receiverId, context);
                         },

@@ -9,6 +9,7 @@ import 'package:rental_sphere/view/booking_view.dart';
 import 'package:rental_sphere/view/bottom_nav_view.dart';
 import 'package:rental_sphere/view/change_password_view.dart';
 import 'package:rental_sphere/view/forgot_pass_view.dart';
+import 'package:rental_sphere/view/full_image_view.dart';
 import 'package:rental_sphere/view/home_view.dart';
 import 'package:rental_sphere/view/login_view.dart';
 import 'package:rental_sphere/view/service_detail_view.dart';
@@ -68,6 +69,9 @@ class Routes {
       case RoutesName.specificChat:
         final args = settings.arguments as Map;
         return MaterialPageRoute(builder: (_)=> SpecificChatView(args: args,));
+      case RoutesName.fullImage:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(builder: (_)=> FullImageView(args: args,));
       default:
         return MaterialPageRoute(builder: (_){
           return const  Scaffold(

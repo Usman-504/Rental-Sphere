@@ -224,6 +224,8 @@ class ServiceDetailCard extends StatelessWidget {
                               NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.specificChat, arguments: {
                                 'senderId' : FirebaseAuth.instance.currentUser!.uid,
                                 'receiverId' : ownerId,
+                                'name' : ownerName,
+                                'image' : ownerImage,
                               });
                         }),
                       ),

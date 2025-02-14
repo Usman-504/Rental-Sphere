@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rental_sphere/utils/size_config.dart';
 import 'package:rental_sphere/utils/utils.dart';
 
@@ -12,7 +16,40 @@ class SpecificChatViewModel with ChangeNotifier {
   int? showDeleteButtonIndex;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final ImagePicker _picker = ImagePicker();
   final TextPainter _textPainter = TextPainter(textDirection: TextDirection.ltr);
+
+  bool _loading = false;
+  bool get loading => _loading;
+
+  void setLoading(bool value){
+    _loading = value;
+    notifyListeners();
+  }
+
+  Future<void> pickImage(String senderId, String receiverId, BuildContext context) async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) return;
+
+    File imageFile = File(pickedFile.path);
+    setLoading(true);
+    await uploadImage(imageFile, senderId, receiverId, context);
+    setLoading(false);
+  }
+
+  Future<void> uploadImage(File imageFile, String senderId, String receiverId, BuildContext context) async {
+    String fileName = "chats/${DateTime.now().millisecondsSinceEpoch}.jpg";
+    try {
+      TaskSnapshot snapshot = await _storage.ref(fileName).putFile(imageFile);
+      String imageUrl = await snapshot.ref.getDownloadURL();
+      String imagePath = snapshot.ref.fullPath;
+
+      await sendMessage(senderId, receiverId, context, imageUrl: imageUrl, imagePath: imagePath);
+    } catch (e) {
+      Utils.flushBarMessage('Error uploading image', context, true);
+    }
+  }
 
   SpecificChatViewModel() {
     chatController.addListener(_updateMaxLines);
@@ -39,9 +76,9 @@ class SpecificChatViewModel with ChangeNotifier {
        .snapshots();
   }
 
-  Future<void> sendMessage(String senderId, String receiverId, BuildContext context) async {
-    if (chatController.text.trim().isEmpty) {
-      Utils.flushBarMessage('Please Type Message First', context, true);
+  Future<void> sendMessage(String senderId, String receiverId, BuildContext context, {String? imageUrl, String? imagePath}) async {
+    if (chatController.text.trim().isEmpty && imageUrl!.isEmpty) {
+      Utils.flushBarMessage('Please Type a Message or Select an Image', context, true);
       return;
     }
 
@@ -53,15 +90,18 @@ class SpecificChatViewModel with ChangeNotifier {
         : "${receiverId}_$senderId";
 
     await _firestore.collection("chats").doc(chatId).collection("messages").add({
-      "text": messageText,
+      "text": imageUrl == null ? messageText : null,
+      'image_url': imageUrl,
+      'image_path': imagePath,
       "senderId": senderId,
       "receiverId": receiverId,
       "timestamp": FieldValue.serverTimestamp(),
+      'isRead': false,
     });
 
     await _firestore.collection("chats").doc(chatId).set({
       "users": [senderId, receiverId],
-      "lastMessage": messageText,
+      "lastMessage": imageUrl != null ? "📷 Image" : messageText,
       "lastMessageTime": FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
@@ -87,19 +127,35 @@ class SpecificChatViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteMessage(String chatId, String messageId) async {
+
+
+
+  Future<void> deleteMessagesAndImages(String chatId) async {
     try {
-      await FirebaseFirestore.instance
+      var messagesSnapshot = await FirebaseFirestore.instance
           .collection('chats')
           .doc(chatId)
           .collection('messages')
-          .doc(messageId)
-          .delete();
+          .get();
+
+      for (var messageDoc in messagesSnapshot.docs) {
+        String? imagePath = messageDoc['image_path'];
+
+        if (imagePath != null && imagePath.isNotEmpty) {
+          await FirebaseStorage.instance.ref(imagePath).delete();
+        }
+
+
+        await messageDoc.reference.delete();
+      }
+
       hideDeleteButton();
     } catch (e) {
-      print("Error deleting message: $e");
+      print("Error deleting messages and images: $e");
     }
   }
+
+
 
 
 
