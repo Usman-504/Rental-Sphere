@@ -30,7 +30,19 @@ class _SpecificChatViewState extends State<SpecificChatView> {
     receiverId = widget.args['receiverId'];
     name = widget.args['name'];
     image = widget.args['image'];
+    // FirebaseFirestore.instance.collection('users').doc(senderId).update({
+    //   'status': 'Online',
+    // });
   }
+
+  // @override
+  // void dispose() {
+  //   FirebaseFirestore.instance.collection('users').doc(senderId).update({
+  //     'status': 'Offline',
+  //     'lastSeen': FieldValue.serverTimestamp(),
+  //   });
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +70,37 @@ class _SpecificChatViewState extends State<SpecificChatView> {
                     radius: 18,
                   ),
                   SizedBox(width: 10),
-                  Text(
-                    name,
-                    style: secondaryTextStyle.copyWith(
-                        color: AppColors.whiteColor),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: secondaryTextStyle.copyWith(color: AppColors.whiteColor),
+                      ),
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: vm.getUserStatus(receiverId),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) return SizedBox.shrink();
+                          var userData = snapshot.data!;
+                          print(userData['status']);
+                          String status = userData['status'] ?? 'Offline';
+                          Timestamp? lastSeen = userData['lastSeen'];
+                          String displayStatus = (status == 'Online')
+                              ? 'Online'
+                              : (lastSeen != null)
+                              ? 'Last Seen ${vm.formatTimestamp(lastSeen)}'
+                              : 'Offline';
+
+                          return Text(
+                            displayStatus,
+                            style: smallTextStyle.copyWith(
+                              color: AppColors.greyColor,
+                              fontSize: 12,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -79,8 +118,8 @@ class _SpecificChatViewState extends State<SpecificChatView> {
                       if (snapshot.hasError) {
                         return Text('Error Occurred');
                       }
-                      if (!snapshot.hasData) {
-                        return Text('No Message Sent Yet');
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(child: Text('No Message Sent/Received Yet'));
                       }
                       var messages = snapshot.data!.docs;
                       WidgetsBinding.instance.addPostFrameCallback((_) {

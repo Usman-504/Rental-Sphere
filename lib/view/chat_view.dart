@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rental_sphere/res/colors.dart';
 import 'package:rental_sphere/res/components/navigation_helper.dart';
 import 'package:rental_sphere/utils/routes/routes_name.dart';
+import 'package:rental_sphere/view_model/bottom_nav_view_model.dart';
 import 'package:rental_sphere/view_model/chat_view_model.dart';
 import '../utils/styles.dart';
 
@@ -77,9 +78,11 @@ class ChatView extends StatelessWidget {
                                 'image': userData['image_url'],
                               },
                             ).then((value){
+
+                              final nav = Provider.of<BottomNavViewModel>(context, listen: false);
+                              nav.listenForUnreadMessages();
                               vm.updateUnreadMessages();
                             });
-
                           },
                           child: ListTile(
                             leading: CircleAvatar(

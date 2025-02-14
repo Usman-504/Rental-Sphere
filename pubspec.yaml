@@ -51,6 +51,7 @@ dependencies:
   another_carousel_pro: ^1.0.2
   url_launcher: ^6.3.1
   flutter_stripe: ^11.4.0
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:

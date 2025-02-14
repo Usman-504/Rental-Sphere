@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rental_sphere/view/all_bookings_view.dart';
-import 'package:rental_sphere/view/booking_view.dart';
-import 'package:rental_sphere/view/service_detail_view.dart';
 import 'package:rental_sphere/view/chat_view.dart';
 import 'package:rental_sphere/view/profile_view.dart';
 import 'package:rental_sphere/view/services_view.dart';
@@ -11,6 +9,7 @@ import '../utils/size_config.dart';
 import '../utils/styles.dart';
 import '../view_model/bottom_nav_view_model.dart';
 import 'home_view.dart';
+import 'package:badges/badges.dart' as badges;
 
 class BottomNavBarView extends StatefulWidget {
   const BottomNavBarView({super.key});
@@ -32,7 +31,11 @@ class _BottomNavBarViewState extends State<BottomNavBarView> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return ChangeNotifierProvider(
-      create: (_) => BottomNavViewModel(),
+      create: (_) {
+        var vm = BottomNavViewModel();
+        vm.listenForUnreadMessages();
+        return vm;
+      },
       child: Consumer<BottomNavViewModel>(
         builder: (context, vm, child) {
           return Scaffold(
@@ -63,7 +66,7 @@ class _BottomNavBarViewState extends State<BottomNavBarView> {
                   label: 'Bookings',
                 ),
                 BottomNavigationBarItem(
-                  icon: _buildNavBarIcon(Icons.chat, vm.myIndex == 3),
+                  icon: _buildNavBarIcon(Icons.chat, vm.myIndex == 3, badgeCount: vm.unreadUserCount),
                   label: 'Chat',
                 ),
                 BottomNavigationBarItem(
@@ -78,18 +81,53 @@ class _BottomNavBarViewState extends State<BottomNavBarView> {
     );
   }
 
-  Widget _buildNavBarIcon(IconData icon, bool isSelected) {
-    return Container(
-      padding:  EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: isSelected ? AppColors.blackColor : Colors.transparent,
-        shape: BoxShape.rectangle,
-      ),
-      child: Icon(
-        icon,
-        color: isSelected ? AppColors.whiteColor : AppColors.blackColor,
-      ),
+  // Widget _buildNavBarIcon(IconData icon, bool isSelected) {
+  //   return Container(
+  //     padding:  EdgeInsets.all(8),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(10),
+  //       color: isSelected ? AppColors.blackColor : Colors.transparent,
+  //       shape: BoxShape.rectangle,
+  //     ),
+  //     child: Icon(
+  //       icon,
+  //       color: isSelected ? AppColors.whiteColor : AppColors.blackColor,
+  //     ),
+  //   );
+  // }
+
+  Widget _buildNavBarIcon(IconData icon, bool isSelected, {int badgeCount = 0}) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: isSelected ? AppColors.blackColor : Colors.transparent,
+            shape: BoxShape.rectangle,
+          ),
+          child: Icon(
+            icon,
+            color: isSelected ? AppColors.whiteColor : AppColors.blackColor,
+          ),
+        ),
+        if (badgeCount > 0)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: badges.Badge(
+              badgeContent: Text(
+                badgeCount.toString(),
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+              badgeStyle: badges.BadgeStyle(
+                badgeColor: Colors.red,
+                elevation: 2,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

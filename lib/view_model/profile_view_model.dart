@@ -158,8 +158,15 @@ class ProfileViewModel with ChangeNotifier{
         showDialog(
             context: context,
             builder: (BuildContext context){
-              return  ShowAlertDialog(message: 'Are you sure you want to logout your account?', onPress: () {
-                FirebaseAuth.instance.signOut().then((_){
+              return  ShowAlertDialog(message: 'Are you sure you want to logout your account?', onPress: () async{
+                User? user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+                    'status': 'Offline',
+                    'lastSeen': FieldValue.serverTimestamp(),
+                  });
+                }
+               await FirebaseAuth.instance.signOut().then((_){
            NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.login, clearStack: true
                   );
                 });
@@ -190,8 +197,15 @@ class ProfileViewModel with ChangeNotifier{
         showDialog(
             context: context,
             builder: (BuildContext context){
-              return  ShowAlertDialog(message: 'Are you sure you want to logout your account?', onPress: () {
-                FirebaseAuth.instance.signOut().then((_){
+              return  ShowAlertDialog(message: 'Are you sure you want to logout your account?', onPress: () async{
+                User? user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+                    'status': 'Offline',
+                    'lastSeen': FieldValue.serverTimestamp(),
+                  });
+                }
+              await  FirebaseAuth.instance.signOut().then((_){
 NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.login, clearStack: true
                     // (Route<dynamic> route) => false,
                   );

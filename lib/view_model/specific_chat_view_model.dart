@@ -55,6 +55,23 @@ class SpecificChatViewModel with ChangeNotifier {
     chatController.addListener(_updateMaxLines);
   }
 
+  Stream<DocumentSnapshot> getUserStatus(String userId) {
+    return FirebaseFirestore.instance.collection('users').doc(userId).snapshots();
+  }
+
+  String formatTimestamp(Timestamp timestamp) {
+    DateTime date = timestamp.toDate();
+    Duration difference = DateTime.now().difference(date);
+
+    if (difference.inMinutes < 1) return "just now";
+    if (difference.inMinutes < 60) return "${difference.inMinutes} minutes ago";
+    if (difference.inHours < 24) return "${difference.inHours} hours ago";
+    return "${difference.inDays} days ago";
+  }
+
+
+
+
   void _updateMaxLines() {
     _textPainter.text = TextSpan(text: chatController.text, style: TextStyle(fontSize: 16.0));
     _textPainter.layout(maxWidth: SizeConfig.screenWidth * 0.47);
