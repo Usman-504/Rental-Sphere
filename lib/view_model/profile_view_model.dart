@@ -53,6 +53,12 @@ class ProfileViewModel with ChangeNotifier{
       'staticIcon': Icons.arrow_forward_ios_rounded,
     },
     {
+      'title': 'Become Admin',
+      'description': '',
+      'icon': Icons.person,
+      'staticIcon': Icons.arrow_forward_ios_rounded,
+    },
+    {
       'title': 'Delete Account',
       'description': 'Remove your account',
       'icon': Icons.auto_delete_outlined,
@@ -84,10 +90,16 @@ class ProfileViewModel with ChangeNotifier{
       'icon': Icons.privacy_tip,
       'staticIcon': Icons.arrow_forward_ios_rounded,
     },
+    // {
+    //   'title': 'Create Account',
+    //   'description': 'Your data protection',
+    //   'icon': Icons.account_circle,
+    //   'staticIcon': Icons.arrow_forward_ios_rounded,
+    // },
     {
-      'title': 'Create Account',
-      'description': 'Your data protection',
-      'icon': Icons.account_circle,
+      'title': 'Become Client',
+      'description': '',
+      'icon': Icons.person,
       'staticIcon': Icons.arrow_forward_ios_rounded,
     },
     {
@@ -146,14 +158,30 @@ class ProfileViewModel with ChangeNotifier{
       if(index ==2){
        launchBrowser();
       }
-     else  if(index ==3){
+      else  if(index ==3) {
+        User? user = FirebaseAuth.instance.currentUser;
+        SharedPreferences sp = await SharedPreferences.getInstance();
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+            'role': 'admin',
+          }).then((value){
+            sp.setString('role', 'admin');
+            NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.splash, clearStack: true);
+
+          });
+        }
+        // NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, arguments:
+        //   true);
+
+      }
+     else  if(index ==4){
         showDialog(
             context: context,
             builder: (BuildContext context){
               return  ShowAlertDialog(message: 'Are you sure you want to delete your account?', onPress: () {  deleteUser(context,); },);
             });
       }
-      else if(index == 4)
+      else if(index == 5)
       {
         showDialog(
             context: context,
@@ -181,9 +209,21 @@ class ProfileViewModel with ChangeNotifier{
       if(index ==2){
         _launchURL();
       }
-     else  if(index ==3){
-       NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, arguments:
-         true);
+     else  if(index ==3) {
+        User? user = FirebaseAuth.instance.currentUser;
+        SharedPreferences sp = await SharedPreferences.getInstance();
+        if (user != null) {
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+            'role': 'client',
+          }).then((value){
+            sp.setString('role', 'client');
+            NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.splash, clearStack: true);
+
+          });
+        }
+       // NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.signUp, arguments:
+       //   true);
+
       }
       else if(index ==4){
         showDialog(

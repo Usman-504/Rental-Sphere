@@ -221,6 +221,10 @@ class ServiceDetailCard extends StatelessWidget {
                       Expanded(
                         child: CustomButton(
                             text: 'Chat', onPress: (){
+                              if(ownerId == FirebaseAuth.instance.currentUser!.uid ){
+                                Utils.flushBarMessage('You Can\'t Chat With Yourself!', context, true);
+                                return;
+                              }
                               NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.specificChat, arguments: {
                                 'senderId' : FirebaseAuth.instance.currentUser!.uid,
                                 'receiverId' : ownerId,
