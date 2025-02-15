@@ -156,22 +156,59 @@ class UpdateServiceViewModel with ChangeNotifier{
     var stringPrice = pricePerDay;
     var price = int.tryParse(stringPrice);
     DocumentSnapshot document = await FirebaseFirestore.instance
-        .collection(category)
+        .collection(category.toLowerCase())
         .doc(docId)
         .get();
     String oldImagePath = document.get('image_path');
     setLoading(true);
-    await FirebaseFirestore.instance.collection(category).doc(docId).update({
-      category == 'Home' ? 'home_type' : category == 'Camera' ? 'camera_brand' : 'car_model': model,
-      category == 'Home' ? 'bedrooms' : category == 'Camera' ? 'camera_model' : 'car_type': type,
-      category == 'Home' ? 'bathrooms' : category == 'Camera' ? 'lens_type' : 'fuel_type': fuelType,
-      category == 'Home' ? 'furnished' : category == 'Camera' ? 'sensor_type' : 'transmission': transmission,
-      category == 'Home' ? 'size' : category == 'Camera' ? 'resolution' : 'year': year,
+    Map<String, dynamic> updatedFields = {
       'location': location,
       'price': price,
-      'availableFrom':availableFrom,
+      'availableFrom': availableFrom,
       'availableTo': availableTo,
-    });
+    };
+
+
+    if (category == 'Home') {
+      updatedFields.addAll({
+        'home_type': model,
+        'bedrooms': type,
+        'bathrooms': fuelType,
+        'furnished': transmission,
+        'size': year,
+      });
+    } else if (category == 'Camera') {
+      updatedFields.addAll({
+        'camera_brand': model,
+        'camera_model': type,
+        'lens_type': fuelType,
+        'sensor_type': transmission,
+        'resolution': year,
+      });
+    } else {
+      // Default for 'Car'
+      updatedFields.addAll({
+        'car_model': model,
+        'car_type': type,
+        'fuel_type': fuelType,
+        'transmission': transmission,
+        'year': year,
+      });
+    }
+    await FirebaseFirestore.instance.collection(category.toLowerCase()).doc(docId).update(
+        // {
+      // category == 'Home' ? 'home_type' : category == 'Camera' ? 'camera_brand' : 'car_model': model,
+      // category == 'Home' ? 'bedrooms' : category == 'Camera' ? 'camera_model' : 'car_type': type,
+      // category == 'Home' ? 'bathrooms' : category == 'Camera' ? 'lens_type' : 'fuel_type': fuelType,
+      // category == 'Home' ? 'furnished' : category == 'Camera' ? 'sensor_type' : 'transmission': transmission,
+      // category == 'Home' ? 'size' : category == 'Camera' ? 'resolution' : 'year': year,
+      // 'location': location,
+      // 'price': price,
+      // 'availableFrom':availableFrom,
+      // 'availableTo': availableTo,
+    // }
+      updatedFields
+    );
     setLoading(false);
     if(_imageFile != null) {
       if (oldImagePath.isNotEmpty) {
@@ -183,7 +220,7 @@ class UpdateServiceViewModel with ChangeNotifier{
       await uploadImage();
      if(_imageUrl.isNotEmpty) {
        FirebaseFirestore.instance
-          .collection(category)
+          .collection(category.toLowerCase())
           .doc(docId.toString())
           .update({
         'image_url': _imageUrl,
@@ -193,7 +230,7 @@ class UpdateServiceViewModel with ChangeNotifier{
 
       if(_imageUrls.isNotEmpty) {
         FirebaseFirestore.instance
-            .collection(category)
+            .collection(category.toLowerCase())
             .doc(docId.toString())
             .update({
           'image_urls': FieldValue.arrayUnion(_imageUrls),

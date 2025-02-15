@@ -308,7 +308,7 @@ class _UpdateServiceViewState extends State<UpdateServiceView> {
                         text: 'Update Service', onPress: (){
                       vm.updateService(context,
                         widget.args['docId'],
-                        widget.args['category'],
+                          widget.args['category'][0].toUpperCase() + widget.args['category'].substring(1).toLowerCase(),
                         modelController.text.trim().toLowerCase(),
                         typeController.text.trim(),
                         fuelController.text.trim(),
