@@ -61,6 +61,10 @@ class ServiceDetailView extends StatelessWidget {
                     vm.updateRating(rating);
                 }, focusNode: vm.reviewFocusNode,
                   submitReview: () {
+                    if(args['ownerId'] == FirebaseAuth.instance.currentUser!.uid ){
+                      Utils.flushBarMessage('You Can\'t Add Review On Your Service!', context, true);
+                      return;
+                    }
                     vm.submitReview(args['serviceType'].toString().toLowerCase(), args['docId'], context);
                 },
                   loading: vm.loading,
@@ -264,6 +268,10 @@ class ServiceDetailCard extends StatelessWidget {
                   width: SizeConfig.scaleWidth(50),
                 ),
                 Expanded(child: CustomButton(text: 'Rent $serviceType', onPress: (){
+                  if(ownerId == FirebaseAuth.instance.currentUser!.uid ){
+                    Utils.flushBarMessage('You Can\'t Book Your Own Service!', context, true);
+                    return;
+                  }
                   if(available){
                   NavigationHelper.navigateWithSlideTransition(context: context, routeName: RoutesName.booking, arguments: {
                     'serviceType' : serviceType,
@@ -361,19 +369,16 @@ class ServiceDetailCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Expanded(
-                            flex: 1,
-                            child: Container(
-                                height: SizeConfig.scaleHeight(80),
-                                width: SizeConfig.scaleHeight(80),
-                                decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                  boxShadow: normalBoxShadow,
-                                    shape: BoxShape.rectangle,
-                                  image: DecorationImage(image: NetworkImage(reviews[index]['image']),fit: BoxFit.cover)
-                                ),
-                              ),
-                          ),
+                                Container(
+                                    height: SizeConfig.scaleHeight(80),
+                                    width: SizeConfig.scaleHeight(80),
+                                    decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                      boxShadow: normalBoxShadow,
+                                        shape: BoxShape.rectangle,
+                                      image: DecorationImage(image: NetworkImage(reviews[index]['image']),fit: BoxFit.cover)
+                                    ),
+                                  ),
                                 SizedBox(
                                   width: SizeConfig.scaleWidth(15),
                                 ),

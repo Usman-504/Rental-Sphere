@@ -31,6 +31,7 @@ class _ProfileViewState extends State<ProfileView> {
  SizeConfig.init(context);
     return Consumer<ProfileViewModel>(
       builder: (context, vm, child) {
+        String role = vm.role == 'admin' ? 'Service Provider' : 'Service Seeker' ;
        return Scaffold(
             backgroundColor: AppColors.scaffoldColor,
             appBar: AppBar(
@@ -107,7 +108,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   ),
                                 ),
                                 Text(
-                                  'Role: ${vm.role[0].toUpperCase() + vm.role.substring(1)}',
+                                  'Role: $role',
                                   style: smallTextStyle.copyWith(color: AppColors.whiteColor),
                                 ),
                               ],

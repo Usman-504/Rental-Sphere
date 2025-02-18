@@ -53,7 +53,7 @@ class ProfileViewModel with ChangeNotifier{
       'staticIcon': Icons.arrow_forward_ios_rounded,
     },
     {
-      'title': 'Become Admin',
+      'title': 'Become a Provider',
       'description': '',
       'icon': Icons.person,
       'staticIcon': Icons.arrow_forward_ios_rounded,
@@ -97,7 +97,7 @@ class ProfileViewModel with ChangeNotifier{
     //   'staticIcon': Icons.arrow_forward_ios_rounded,
     // },
     {
-      'title': 'Become Client',
+      'title': 'Become a Seeker',
       'description': '',
       'icon': Icons.person,
       'staticIcon': Icons.arrow_forward_ios_rounded,
@@ -140,11 +140,11 @@ class ProfileViewModel with ChangeNotifier{
   dynamic launchBrowser() async {
     try
     {
-      Uri email = Uri(
+      Uri link = Uri(
           scheme: 'https',
           path: "usman-504.github.io/Rental-Sphere-Policy/privacy-policy.html"
       );
-      await launchUrl(email);
+      await launchUrl(link);
     }
     catch(e) {
       debugPrint(e.toString());
